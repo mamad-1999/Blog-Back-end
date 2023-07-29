@@ -6,8 +6,12 @@ import cors from "cors";
 
 import corsOptions from "./configs/corsOptions";
 import credential from "./middleware/credential";
+import connectDB from "./database/connectDB";
 
 const app = express();
+
+// connect to Database
+connectDB()
 
 app.use(credential)
 

@@ -9,8 +9,8 @@ mongoose.connection.once('open', () => {
   app.listen(port, () => {
     console.log(`Listening: http://localhost:${port}`);
   });
-})
+});
 
 mongoose.connection.on('error', (err) => {
   console.log(err)
-})
+});
