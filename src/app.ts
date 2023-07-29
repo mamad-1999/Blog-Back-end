@@ -1,10 +1,11 @@
+import dotenv from "dotenv"
+dotenv.config()
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 
 import corsOptions from "./configs/corsOptions";
 
-require("dotenv").config();
 
 const app = express();
 
