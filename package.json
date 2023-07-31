@@ -19,6 +19,7 @@
     "express": "^4.18.2",
     "fastest-validator": "^1.17.0",
     "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1"
   },
   "devDependencies": {
