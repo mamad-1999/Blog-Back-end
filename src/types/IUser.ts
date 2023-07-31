@@ -12,5 +12,6 @@ export type IUser = {
     gender?: string
     twitterProfile?: string
     linkedinProfile?: string  
-    posts?: [Types.ObjectId]
+    posts?: [Types.ObjectId],
+    favorites: [Types.ObjectId]
 }
