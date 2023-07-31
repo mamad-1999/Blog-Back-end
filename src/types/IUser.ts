@@ -13,5 +13,6 @@ export type IUser = {
     twitterProfile?: string
     linkedinProfile?: string  
     posts?: [Types.ObjectId],
-    favorites: [Types.ObjectId]
+    favorites: [Types.ObjectId],
+    refreshToken: string
 }

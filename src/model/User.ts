@@ -40,8 +40,11 @@ const userModel = new mongoose.Schema<IUser>({
     linkedinProfile: { type: String },
     twitterProfile: { type: String },
     posts: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
-    favorites: [{ type: mongoose.Types.ObjectId, ref: 'Post' }]
-});
+    favorites: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
+    refreshToken: { type: String }
+},
+    { timestamps: true },
+);
 
 export default mongoose.model<IUser>('User', userModel);
 
