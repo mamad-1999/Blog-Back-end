@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config()
-import express from "express";
+import express, { Response, Request } from "express";
 import helmet from "helmet";
 import cors from "cors";
 
