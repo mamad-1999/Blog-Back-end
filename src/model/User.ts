@@ -41,6 +41,7 @@ const userModel = new mongoose.Schema<IUser>({
     twitterProfile: { type: String },
     posts: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     favorites: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
+    savePost: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     refreshToken: { type: String }
 },
     { timestamps: true },

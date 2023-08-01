@@ -14,5 +14,6 @@ export type IUser = {
     linkedinProfile?: string  
     posts?: [Types.ObjectId],
     favorites: [Types.ObjectId],
+    savePost: [Types.ObjectId],
     refreshToken: string
 }
