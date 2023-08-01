@@ -27,4 +27,8 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 app.use('/auth', authRouter)
 
+app.all("*", (req: Request, res: Response) => {
+    res.status(404).json({ message: "404 Not Found" });
+});
+
 export default app;
