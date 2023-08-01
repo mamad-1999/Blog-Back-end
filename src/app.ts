@@ -10,6 +10,7 @@ import connectDB from "./database/connectDB";
 
 // Routes
 import authRouter from './routes/auth';
+import errorController from "./middleware/errorController";
 
 const app = express();
 
@@ -30,5 +31,7 @@ app.use('/auth', authRouter)
 app.all("*", (req: Request, res: Response) => {
     res.status(404).json({ message: "404 Not Found" });
 });
+
+app.use(errorController)
 
 export default app;

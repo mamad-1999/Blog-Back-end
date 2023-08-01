@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import checkValidation from '../validators/register';
-import errorController from "../utils/errorHandler";
+import errorHandler from "../utils/errorHandler";
 import User from "../model/User";
 
 export const register = async (
@@ -18,7 +18,7 @@ export const register = async (
     try {
         const checkData = await checkValidation({ email, password, confirmPassword })
         if (checkData !== true){
-            errorController('Invalid Fields', 400, checkData);
+            errorHandler('Invalid Fields', 400, checkData);
         }
 
         if(password !== confirmPassword){
@@ -38,7 +38,7 @@ export const register = async (
         });
 
         if (!result) {
-            errorController('user was not created... Please try again');
+            errorHandler('user was not created... Please try again');
         }
         res.status(201).json({ message: 'New User Created :)', user: { email } })
     } catch (error) {
