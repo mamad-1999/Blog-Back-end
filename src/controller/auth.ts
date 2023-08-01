@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import bcrypt from 'bcrypt'
 import checkValidation from '../validators/register';
 import errorController from "../utils/errorHandler";
-import bcrypt from 'bcrypt';
 import User from "../model/User";
 
 export const register = async (
