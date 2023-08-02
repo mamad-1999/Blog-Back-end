@@ -142,3 +142,42 @@ export const refresh = async (
         next(error)
     }
 }
+
+export const logout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const cookies = req.cookies
+    if (!cookies?.jwt){
+        return res.status(204)
+    }
+    const refreshToken = cookies.jwt
+
+    try {
+        // cookie in Db?
+        const foundUser = await User.findOne({ refreshToken }).exec();
+        if(!foundUser) {
+            res.clearCookie('jwt', {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true
+            })
+        }
+        // Delete cookie in Db
+        foundUser!.refreshToken = '';
+        const result = await foundUser!.save()
+        if(!result){
+            errorHandler('cleared not success... Try again')
+        }
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true
+        })
+        res.status(200).json({ message: 'cookies cleared' })
+
+    } catch (error) {
+        next(error)
+    }
+}

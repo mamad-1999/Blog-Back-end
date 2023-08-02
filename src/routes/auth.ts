@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, refresh } from '../controller/auth';
+import { register, login, refresh, logout } from '../controller/auth';
 
 const route = express.Router()
 
@@ -11,5 +11,8 @@ route.post('/login', login)
 
 // Get => '/auth/refresh'
 route.get('/refresh', refresh)
+
+// Post => '/auth/logout'
+route.post('/logout', logout)
 
 export default route;
