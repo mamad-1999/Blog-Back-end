@@ -1,6 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config()
 import express, { Response, Request } from "express";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 
@@ -16,6 +17,8 @@ const app = express();
 
 // connect to Database
 connectDB()
+
+app.use(cookieParser())
 
 app.use(credential)
 

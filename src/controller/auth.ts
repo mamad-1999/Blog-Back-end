@@ -104,3 +104,41 @@ export const login = async (
         next(error)
     }
 }
+
+export const refresh = async (
+    req: Request,
+    res: Response, 
+    next: NextFunction
+) => {
+    const cookies = req.cookies
+
+    try {
+        if (!cookies?.jwt){
+            errorHandler('Unauthorized', 401)
+        }
+        const refreshToken = cookies.jwt
+        const decoded = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET?.toString()!,
+        ) as { email: string }
+
+        if (!decoded || !decoded.email){
+            errorHandler('Forbidden', 403)
+        }
+
+        const foundUser = await User.findOne({ email: decoded.email }).exec()
+        if (!foundUser){
+            errorHandler('Unauthorized', 401)
+        }
+
+        const accessToken = jwt.sign(
+            { email: foundUser!.email, role: foundUser!.role },
+            process.env.ACCESS_TOKEN_SECRET?.toString()!,
+            { expiresIn: "16m" }
+        )
+
+        res.status(200).json({ accessToken })
+    } catch (error) {
+        next(error)
+    }
+}
