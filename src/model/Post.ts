@@ -30,6 +30,8 @@ const postModel = new mongoose.Schema<IPost>({
     tags: {
         type: [String],
     }
-}) 
+},
+    { timestamps: true }
+) 
 
 export default mongoose.model('Post', postModel)
