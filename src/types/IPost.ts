@@ -9,3 +9,10 @@ export type IPost = {
     likesCount: number
     tags: [string]
 }
+
+export type IAddPost = {
+    title: string;
+    image: string;
+    description: string;
+    tags?: [string]
+}
