@@ -25,3 +25,5 @@ const verifyJWT = (req: Request, res: Response, next: NewableFunction) => {
         next(error)
     }
 }
+
+export default verifyJWT
