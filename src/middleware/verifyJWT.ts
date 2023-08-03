@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import errorHandler from '../utils/errorHandler'
 
-const verifyJWT = (req: Request, res: Response, next: NewableFunction) => {
+const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = req.headers.authorization || ((req.headers.Authorization as string))
 
-    if(!authorizationHeader.startsWith('bearer ')){
+    if(!authorizationHeader.startsWith('Bearer ')){
         return res.status(401).json({ message: 'Unauthorized' })
     }
 
