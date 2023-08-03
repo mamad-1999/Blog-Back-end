@@ -6,8 +6,9 @@ import Post from "../model/Post"
 import { IAddPost } from "../types/IPost"
 
 export const createPost = async (
-    req: Request, 
+    req: Request<{}, {}, IAddPost, {}>, 
     res: Response,
     next: NextFunction
 ) => {
+    // console.log((req as any).user)
 }
