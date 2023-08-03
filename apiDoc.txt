@@ -1,0 +1,85 @@
+API Documentation: Authentication Routes
+
+Base URL: http://localhost:8000 or env PORT 
+
+--------------------------------------------------------
+
+1. Register
+   - Description: Create a new user account.
+   - Endpoint: POST /auth/register
+   - Request body:
+     {
+       "email": "string",
+       "password": "string",
+       "confirmPassword": "string"
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "New User Created"
+       }
+     - 400 Bad Request:
+       {
+         "error": "Invalid username or password."
+       }
+     - 409 Conflict:
+       {
+         "error": "This email already existed"
+       }
+
+--------------------------------------------------------
+
+2. Login
+   - Description: Log in with a registered user account.
+   - Endpoint: POST /auth/login
+   - This route limited => { 5 request in per 1 Minute }
+   - Request body:
+     {
+       "email": "string",
+       "password": "string"
+     }
+   - Response:
+     - 200 OK:
+       {
+         "access_token": "string",
+       }
+     - 400 Invalid Input:
+       {
+         "error": "Invalid Input"
+       }
+
+--------------------------------------------------------
+
+3. Refresh Token
+   - Description: Get a new access token using a refresh token.
+   - Endpoint: GET /refresh
+   - Response:
+     - 200 OK:
+       {
+         "access_token": "string"
+       }
+     - 401 Unauthorized:
+       {
+         "error": "Invalid refresh token."
+       }
+     - 403 Forbidden:
+       {
+         "error": "Forbidden"
+       }
+
+--------------------------------------------------------
+
+4. Logout
+   - Description: Log out and invalidate the access token.
+   - Endpoint: POST /logout
+   - Response:
+     - 200 OK:
+       {
+         "message": "User logged out successfully... cookies cleared"
+       }
+     - 500 Server error:
+       {
+         "error": "cleared not success... Try again"
+       }
+
+--------------------------------------------------------

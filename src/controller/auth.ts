@@ -175,7 +175,7 @@ export const logout = async (
             sameSite: 'none',
             secure: true
         })
-        res.status(200).json({ message: 'cookies cleared' })
+        res.status(200).json({ message: 'User logged out successfully... cookies cleared' })
 
     } catch (error) {
         next(error)
