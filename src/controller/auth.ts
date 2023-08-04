@@ -5,6 +5,7 @@ import checkRegisterValidation from '../validators/register';
 import checkLoginValidation from '../validators/login';
 import errorHandler from "../utils/errorHandler";
 import User from "../model/User";
+import mongoose from "mongoose";
 
 export const register = async (
     req: Request,
@@ -75,13 +76,13 @@ export const login = async (
         }
     
         const accessToken = jwt.sign(
-            { email: foundUser!.email, role: foundUser!.role },
+            { _id: foundUser!._id, role: foundUser!.role },
             process.env.ACCESS_TOKEN_SECRET?.toString()!,
             { expiresIn: '16m' }
         )
     
         const refreshToken = jwt.sign(
-            { email: foundUser!.email },
+            { _id: foundUser!._id },
             process.env.REFRESH_TOKEN_SECRET?.toString()!,
             { expiresIn: '8d' }
         )
@@ -120,19 +121,19 @@ export const refresh = async (
         const decoded = jwt.verify(
             refreshToken,
             process.env.REFRESH_TOKEN_SECRET?.toString()!,
-        ) as { email: string }
+        ) as { _id: mongoose.Types.ObjectId }
 
-        if (!decoded || !decoded.email){
+        if (!decoded || !decoded._id){
             errorHandler('Forbidden', 403)
         }
 
-        const foundUser = await User.findOne({ email: decoded.email }).exec()
+        const foundUser = await User.findOne({ _id: decoded._id }).exec()
         if (!foundUser){
             errorHandler('Unauthorized', 401)
         }
 
         const accessToken = jwt.sign(
-            { email: foundUser!.email, role: foundUser!.role },
+            { _id: foundUser!._id, role: foundUser!.role },
             process.env.ACCESS_TOKEN_SECRET?.toString()!,
             { expiresIn: "16m" }
         )

@@ -16,7 +16,7 @@ export const createPost = async (
         errorHandler('Invalid inputs', 400, checkData)
     }
 
-    const foundUser = await User.findOne({ email: req.user })
+    const foundUser = await User.findOne({ _id: req.user })
         .select('-password -refreshToken')
         .exec()
     
@@ -24,7 +24,7 @@ export const createPost = async (
         return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    const newPost = new Post({...req.body, userId: req.user})
+    const newPost = new Post({ ...req.body, userId: req.user })
     const savePost = await newPost.save()
 
     foundUser?.posts?.push(savePost as any)
