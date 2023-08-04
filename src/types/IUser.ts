@@ -1,19 +1,19 @@
-import { Types } from "mongoose"
+import { Types } from 'mongoose';
 
 export type IUser = {
-    email: string
-    password: string
-    name?: string
-    image?: string
-    phone?: string
-    biography?: string
-    role: "user" | "admin" | "superAdmin"
-    birthdayDate?: string
-    gender?: string
-    twitterProfile?: string
-    linkedinProfile?: string  
-    posts?: [Types.ObjectId],
-    favorites: [Types.ObjectId],
-    savePost: [Types.ObjectId],
-    refreshToken: string
-}
+  email: string;
+  password: string;
+  name?: string;
+  image?: string;
+  phone?: string;
+  biography?: string;
+  role: 'user' | 'admin' | 'superAdmin';
+  birthdayDate?: string;
+  gender?: string;
+  twitterProfile?: string;
+  linkedinProfile?: string;
+  posts?: [Types.ObjectId];
+  favorites: [Types.ObjectId];
+  savePost: [Types.ObjectId];
+  refreshToken: string;
+};

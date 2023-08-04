@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const port = process.env.PORT || 5000;
 
 mongoose.connection.once('open', () => {
-  console.log('CONNECTED TO MONGODB!')
+  console.log('CONNECTED TO MONGODB!');
 
   app.listen(port, () => {
     console.log(`Listening: http://localhost:${port}`);
@@ -12,5 +12,5 @@ mongoose.connection.once('open', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-  console.log(err)
+  console.log(err);
 });

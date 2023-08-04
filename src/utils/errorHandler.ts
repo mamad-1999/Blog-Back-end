@@ -1,12 +1,11 @@
-import { CustomError } from "../types/error"
+import { CustomError } from '../types/error';
 
 const errorHandler = (message: string, statusCode: number = 500, data?: any[]) => {
-    const error = new Error(message) as CustomError;
-    error.statusCode = statusCode;
-    if (data) error.data = data
+  const error = new Error(message) as CustomError;
+  error.statusCode = statusCode;
+  if (data) error.data = data;
 
-    throw error
-}
+  throw error;
+};
 
-export default errorHandler
-
+export default errorHandler;
