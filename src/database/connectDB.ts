@@ -1,8 +1,8 @@
 import mongoose, { ConnectOptions } from "mongoose";
 
 type MongooseOptionType = {
-    useNewUrlParser: Boolean,
-    useUnifiedTopology: Boolean,
+    useNewUrlParser: boolean,
+    useUnifiedTopology: boolean,
 }
 
 const options: MongooseOptionType & ConnectOptions = {

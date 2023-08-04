@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2018",
 
     "module": "CommonJS",
     "rootDir": ".",
     "moduleResolution": "node",
 
     "outDir": "dist",
-
+    "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
