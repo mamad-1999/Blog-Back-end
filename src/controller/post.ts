@@ -75,6 +75,7 @@ export const deletePost = async (
 
     await post.deleteOne();
     await foundUser.updateOne({ $pull: { posts: req.params.id } });
+    await foundUser.save();
 
     res.status(200).json({ message: 'Post delete successfully', post });
   } catch (error) {
