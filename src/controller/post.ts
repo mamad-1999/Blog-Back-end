@@ -57,9 +57,6 @@ export const deletePost = async (
   }
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
 
     const foundUser = await User.findOne({ _id: req.user })
       .select('-password -refreshToken')
