@@ -6,6 +6,7 @@ import checkLoginValidation from '../validators/login';
 import errorHandler from '../utils/errorHandler';
 import User from '../model/User';
 import mongoose from 'mongoose';
+import env from '../utils/env';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, confirmPassword } = req.body;
@@ -97,17 +98,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         _id: foundUser!._id,
         role: foundUser!.role,
       },
-      process.env.ACCESS_TOKEN_SECRET?.toString()!,
+      env.ACCESS_TOKEN_SECRET,
       { expiresIn: '16m' },
     );
 
-    const refreshToken = jwt.sign(
-      { _id: foundUser!._id },
-      process.env.REFRESH_TOKEN_SECRET?.toString()!,
-      {
-        expiresIn: '8d',
-      },
-    );
+    const refreshToken = jwt.sign({ _id: foundUser!._id }, env.REFRESH_TOKEN_SECRET, {
+      expiresIn: '8d',
+    });
 
     foundUser!.refreshToken = refreshToken;
     const result = await foundUser!.save();
@@ -136,10 +133,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
       errorHandler('Unauthorized', 401);
     }
     const refreshToken = cookies.jwt;
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET?.toString()!,
-    ) as {
+    const decoded = jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET) as {
       _id: mongoose.Types.ObjectId;
     };
 
@@ -159,7 +153,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
         _id: foundUser!._id,
         role: foundUser!.role,
       },
-      process.env.ACCESS_TOKEN_SECRET?.toString()!,
+      env.ACCESS_TOKEN_SECRET,
       { expiresIn: '16m' },
     );
 

@@ -6,7 +6,12 @@ import Post from '../model/Post';
 import { IAddPost } from '../types/IPost';
 
 export const createPost = async (
-  req: Request<{}, {}, IAddPost, {}>,
+  req: Request<
+    Record<string, never>,
+    Record<string, never>,
+    IAddPost,
+    Record<string, never>
+  >,
   res: Response,
   next: NextFunction,
 ) => {
@@ -27,7 +32,7 @@ export const createPost = async (
     const newPost = new Post({ ...req.body, userId: req.user });
     const savePost = await newPost.save();
 
-    foundUser?.posts?.push(savePost as any);
+    foundUser?.posts?.push(savePost as never);
     await foundUser.save();
 
     res.status(201).json({ message: 'Post saved successfully', savePost });

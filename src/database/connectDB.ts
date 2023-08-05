@@ -1,4 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
+import env from '../utils/env';
 
 type MongooseOptionType = {
   useNewUrlParser: boolean;
@@ -12,7 +13,7 @@ const options: MongooseOptionType & ConnectOptions = {
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URI?.toString()!, options);
+    await mongoose.connect(env.DATABASE_URI, options);
   } catch (error) {
     console.log(error);
   }
