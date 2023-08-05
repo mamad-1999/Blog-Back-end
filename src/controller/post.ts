@@ -82,3 +82,50 @@ export const deletePost = async (
     next(error);
   }
 };
+
+export const updatePost = async (
+  req: Request<{ id: string }, Record<string, never>, IAddPost, Record<string, never>>,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid id' });
+  }
+  try {
+    const checkData = await checkPostValidator({ ...req.body });
+    if (checkData !== true) {
+      errorHandler('Invalid inputs', 400, checkData);
+    }
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const foundUser = await User.findOne({ _id: req.user })
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (post?.userId.toString() !== foundUser._id.toString()) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const postUpdated = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { ...req.body },
+      },
+      { new: true },
+    );
+    if (!postUpdated) {
+      return res.status(500).json({ message: 'Update Post was wrong!... Try again' });
+    }
+
+    res.status(200).json({ message: 'Update Post successfully', postUpdated });
+  } catch (error) {
+    next(error);
+  }
+};
