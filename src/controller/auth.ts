@@ -99,7 +99,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         role: foundUser!.role,
       },
       env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '16m' },
+      { expiresIn: '6d' },
     );
 
     const refreshToken = jwt.sign({ _id: foundUser!._id }, env.REFRESH_TOKEN_SECRET, {
@@ -154,7 +154,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
         role: foundUser!.role,
       },
       env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '16m' },
+      { expiresIn: '6d' },
     );
 
     res.status(200).json({ accessToken });
