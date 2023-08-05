@@ -129,3 +129,25 @@ export const updatePost = async (
     next(error);
   }
 };
+
+export const getPost = async (
+  req: Request<
+    { id: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid id' });
+  }
+  try {
+    const post = await Post.findById(req.params.id);
+    res.status(200).json({ message: 'Post found successfully', post });
+    res.status;
+  } catch (error) {
+    next(error);
+  }
+};
