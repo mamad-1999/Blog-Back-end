@@ -1,7 +1,9 @@
-API Documentation: Authentication Routes
-
 Base URL: http://localhost:8000 or env PORT 
 
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+********* /// API Documentation: Authentication Routes /// *********
 --------------------------------------------------------
 
 1. Register
@@ -82,4 +84,123 @@ Base URL: http://localhost:8000 or env PORT
          "error": "cleared not success... Try again"
        }
 
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+********* /// API Documentation: Posts Routes /// *********
+--------------------------------------------------------
+1. createPost
+   - Description: Create a new Post.
+   - Endpoint: POST /posts
+   - Request params:
+     {
+       "id": "string",
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "Post delete successfully"
+       }
+     - 400 Bad Request:
+       {
+         "error": "Invalid inputs"
+       }
+     - 401 Unauthorized:
+       {
+         "error": "Unauthorized"
+       }
+
+--------------------------------------------------------
+
+1. deletePost
+   - Description: Delete the post.
+   - Endpoint: DELETE /posts/:id
+   - Request body:
+     {
+       "title": "string",
+       "description": "string",
+       "image": "string"
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "Post saved successfully"
+       }
+     - 400 Bad Request:
+       {
+         "error": "Invalid inputs"
+       }
+     - 401 Unauthorized:
+       {
+         "error": "Unauthorized"
+       }
+
+--------------------------------------------------------
+
+1. updatePost
+   - Description: update information of post.
+   - Endpoint: PUT /posts/:id
+   - Request body:
+     {
+       "title": "string",
+       "description": "string",
+       "image": "string"
+     }
+    - Request params:
+     {
+       "id": "string",
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "Update Post successfully"
+       }
+     - 400 Bad Request:
+       {
+         "error": "Invalid inputs"
+       }
+     - 401 Unauthorized:
+       {
+         "error": "Unauthorized"
+       }
+
+--------------------------------------------------------
+
+1. getPost
+   - Description: Get single post by id.
+   - Endpoint: GET /posts/:id
+   - Request params:
+     {
+       "id": "string",
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "Post found successfully"
+       }
+     - 400 Bad Request:
+       {
+         "error": "Invalid inputs"
+       }
+
+--------------------------------------------------------
+
+1. getPosts
+   - Description: Get All of the post BY optional filter (pagination and search)
+   - Endpoint: GET /posts/
+   - Request query:
+     {
+       "page": "string", => optional
+       "limit": "string", => optional
+       "search": "string", => optional
+     }
+   - Response:
+     - 200 OK:
+       {
+         "message": "Get Posts successfully"
+       }
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
 --------------------------------------------------------
