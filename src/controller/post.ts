@@ -148,3 +148,47 @@ export const getPost = async (
     next(error);
   }
 };
+
+export const getPosts = async (
+  req: Request<
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>,
+    { page?: string; limit?: string; search?: string }
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { query } = req;
+  const pageNumber = parseInt(query.page || '1');
+  const postPerPage = parseInt(query.limit || '2');
+
+  const filters: any = {};
+  if (query.search) {
+    filters.title = {
+      $regex: new RegExp('.*' + query.search?.trim() + '.*', 'ig'),
+    };
+  }
+  try {
+    const posts = await Post.find(filters)
+      .sort({ _id: 1 })
+      .skip((pageNumber - 1) * postPerPage)
+      .limit(postPerPage);
+
+    const totalPosts = await Post.countDocuments(filters);
+
+    res.status(200).json({
+      message: 'Get Posts successfully',
+      data: posts,
+      totalPosts: totalPosts,
+      currentPage: pageNumber,
+      nextPage: pageNumber + 1,
+      previousPage: pageNumber - 1,
+      hasNextPage: postPerPage * pageNumber < totalPosts,
+      hasPreviousPage: pageNumber > 1,
+      lastPage: Math.ceil(totalPosts / postPerPage),
+    });
+  } catch (error) {
+    next(error);
+  }
+};

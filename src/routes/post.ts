@@ -1,5 +1,11 @@
 import express from 'express';
-import { createPost, deletePost, updatePost, getPost } from '../controller/post';
+import {
+  createPost,
+  deletePost,
+  updatePost,
+  getPost,
+  getPosts,
+} from '../controller/post';
 import verifyJWT from '../middleware/verifyJWT';
 
 const route = express.Router();
@@ -15,5 +21,8 @@ route.put('/:id', verifyJWT, updatePost);
 
 // GET => '/posts/:id'
 route.get('/:id', getPost);
+
+// GET => '/posts'
+route.get('/', getPosts);
 
 export default route;
