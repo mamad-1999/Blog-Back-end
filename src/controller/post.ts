@@ -141,7 +141,7 @@ export const getPost = async (
     return res.status(400).json({ message: 'Invalid id' });
   }
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate('userId', 'email image');
     res.status(200).json({ message: 'Post found successfully', post });
     res.status;
   } catch (error) {
