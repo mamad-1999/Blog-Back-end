@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import User from '../model/User';
 import { IUpdateUser } from '../types/IUser';
+import checkUserData from '../validators/user';
+import errorHandler from '../utils/errorHandler';
 
 export const updateUser = async (
   req: Request<{ id: string }, Record<string, never>, IUpdateUser, Record<string, never>>,
@@ -24,6 +26,11 @@ export const updateUser = async (
       return res
         .status(401)
         .json({ message: 'You are not Authorized to update this user' });
+    }
+
+    const checkData = await checkUserData({ ...req.body });
+    if (checkData !== true) {
+      errorHandler('Invalid inputs', 400, checkData);
     }
 
     const userUpdated = await User.findByIdAndUpdate(req.params.id, {
