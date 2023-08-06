@@ -16,3 +16,9 @@ export type IAddPost = {
   description: string;
   tags?: [string];
 };
+
+export interface PostFilters {
+  title?: {
+    $regex: RegExp;
+  };
+}

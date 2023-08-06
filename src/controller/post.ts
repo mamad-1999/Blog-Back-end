@@ -3,7 +3,7 @@ import checkPostValidator from '../validators/post';
 import errorHandler from '../utils/errorHandler';
 import User from '../model/User';
 import Post from '../model/Post';
-import { IAddPost } from '../types/IPost';
+import { IAddPost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
 
 export const createPost = async (
@@ -163,7 +163,7 @@ export const getPosts = async (
   const pageNumber = parseInt(query.page || '1');
   const postPerPage = parseInt(query.limit || '2');
 
-  const filters: any = {};
+  const filters: PostFilters = {};
   if (query.search) {
     filters.title = {
       $regex: new RegExp('.*' + query.search?.trim() + '.*', 'ig'),
