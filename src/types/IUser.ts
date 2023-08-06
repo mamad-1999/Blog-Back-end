@@ -17,3 +17,14 @@ export type IUser = {
   savePost: [Types.ObjectId];
   refreshToken: string;
 };
+
+export type IUpdateUser = {
+  name?: string;
+  image?: string;
+  phone?: string;
+  biography?: string;
+  birthdayDate?: string;
+  gender?: string;
+  twitterProfile?: string;
+  linkedinProfile?: string;
+};

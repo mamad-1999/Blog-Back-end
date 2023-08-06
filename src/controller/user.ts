@@ -1,14 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import User from '../model/User';
+import { IUpdateUser } from '../types/IUser';
 
 export const updateUser = async (
-  req: Request<
-    { id: string },
-    Record<string, never>,
-    Record<string, never>,
-    Record<string, never>
-  >,
+  req: Request<{ id: string }, Record<string, never>, IUpdateUser, Record<string, never>>,
   res: Response,
   next: NextFunction,
 ) => {
