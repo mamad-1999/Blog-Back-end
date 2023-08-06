@@ -25,7 +25,7 @@ const userModel = new mongoose.Schema<IUser>(
       type: String,
       maxlength: 255,
     },
-    gender: { type: String },
+    gender: { type: String, enum: ['male', 'female', 'other'] },
     phone: {
       type: String,
       minlength: 10,

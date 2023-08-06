@@ -9,7 +9,7 @@ export type IUser = {
   biography?: string;
   role: 'user' | 'admin' | 'superAdmin';
   birthdayDate?: string;
-  gender?: string;
+  gender?: 'male' | 'female' | 'other';
   twitterProfile?: string;
   linkedinProfile?: string;
   posts?: [Types.ObjectId];

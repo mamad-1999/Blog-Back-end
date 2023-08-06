@@ -8,7 +8,7 @@ const schema = {
   phone: { type: 'string', trim: true, optional: true, min: 10 },
   biography: { type: 'string', optional: true, max: 255 },
   birthdayDate: { type: 'string', optional: true },
-  gender: { type: 'string', optional: true },
+  gender: { type: 'string', value: ['male', 'female', 'other'], optional: true },
   twitterProfile: { type: 'string', optional: true },
   linkedinProfile: { type: 'string', optional: true },
 };
