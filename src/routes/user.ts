@@ -1,5 +1,6 @@
 import express from 'express';
-import { updateUser, getUser } from '../controller/user';
+import { updateUser, getUser, getUsers } from '../controller/user';
+import verifyRole from '../middleware/verifyRole';
 
 const route = express.Router();
 
@@ -8,5 +9,8 @@ route.put('/:id', updateUser);
 
 // GET => '/users/:id'
 route.get('/:id', getUser);
+
+// GET => '/users' /* admin */
+route.get('/', verifyRole('admin'), getUsers);
 
 export default route;

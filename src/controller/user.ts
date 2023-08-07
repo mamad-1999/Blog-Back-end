@@ -72,3 +72,40 @@ export const getUser = async (
     next(error);
   }
 };
+
+export const getUsers = async (
+  req: Request<
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>,
+    { page?: string; limit?: string }
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  const pageNumber = parseInt(req.query.page || '1');
+  const userPerPage = parseInt(req.query.limit || '4');
+  try {
+    const users = await User.find({ role: 'user' })
+      .select('-password -refreshToken')
+      .sort({ _id: 1 })
+      .skip((pageNumber - 1) * userPerPage)
+      .limit(userPerPage);
+
+    const totalUsers = await User.countDocuments({ role: 'user' });
+
+    res.status(200).json({
+      message: 'Get users successfully',
+      data: users,
+      totalPosts: totalUsers,
+      currentPage: pageNumber,
+      nextPage: pageNumber + 1,
+      previousPage: pageNumber - 1,
+      hasNextPage: userPerPage * pageNumber < totalUsers,
+      hasPreviousPage: pageNumber > 1,
+      lastPage: Math.ceil(totalUsers / userPerPage),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
