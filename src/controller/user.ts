@@ -35,7 +35,7 @@ export const updateUser = async (
 
     const userUpdated = await User.findByIdAndUpdate(req.params.id, {
       $set: { ...req.body },
-    });
+    }).select('-password -refreshToken');
 
     if (!updateUser) {
       return res.status(500).json({ message: 'Something wrong... Try again..' });
