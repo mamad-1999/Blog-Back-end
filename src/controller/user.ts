@@ -46,3 +46,29 @@ export const updateUser = async (
     next(error);
   }
 };
+
+export const getUser = async (
+  req: Request<
+    { id: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+    const foundUser = await User.findById(req.params.id).select(
+      '-password -refreshToken',
+    );
+    if (!foundUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User get data successfully', foundUser });
+  } catch (error) {
+    next(error);
+  }
+};

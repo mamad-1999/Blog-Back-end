@@ -1,9 +1,12 @@
 import express from 'express';
-import { updateUser } from '../controller/user';
+import { updateUser, getUser } from '../controller/user';
 
 const route = express.Router();
 
-// GET => '/users/:id'
+// PUT => '/users/:id'
 route.put('/:id', updateUser);
+
+// GET => '/users/:id'
+route.get('/:id', getUser);
 
 export default route;
