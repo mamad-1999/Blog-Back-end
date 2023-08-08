@@ -23,7 +23,7 @@ export const favorites = async (
     await foundUser.updateOne({ $push: { favoritesCategory: req.body.category } });
     await foundUser.save();
 
-    res.status(200).json({ message: 'save favorite' });
+    res.status(200).json({ message: 'save favorite', data: foundUser.favoritesCategory });
   } catch (error) {
     next(error);
   }
@@ -50,7 +50,9 @@ export const unFavorites = async (
     await foundUser.updateOne({ $pull: { favoritesCategory: req.body.category } });
     await foundUser.save();
 
-    res.status(200).json({ message: 'unSave favorite' });
+    res
+      .status(200)
+      .json({ message: 'unSave favorite', data: foundUser.favoritesCategory });
   } catch (error) {
     next(error);
   }
