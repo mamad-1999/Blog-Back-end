@@ -32,10 +32,10 @@ route.delete('/reading-list/:postId', verifyJWT, unSaveReadingList);
 // GET => '/users/reading-list/:uid'
 route.get('/reading-list/:uid', verifyJWT, getReadingLists);
 
-// POST => '/users/favorites/:postId'
-route.post('/favorites/:postId', verifyJWT, favorites);
+// POST => '/users/favorites'
+route.post('/favorites', verifyJWT, favorites);
 
-// DELETE => '/users/favorites/:postId'
-route.delete('/favorites/:postId', verifyJWT, unFavorites);
+// DELETE => '/users/favorites'
+route.delete('/favorites', verifyJWT, unFavorites);
 
 export default route;
