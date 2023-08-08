@@ -18,10 +18,10 @@ route.get('/', verifyJWT, verifyRole('admin'), getUsers);
 // DELETE => '/users/:id' /* admin */
 route.delete('/:id', verifyJWT, verifyRole('admin'), deleteUser);
 
-// POST => '/users/favorites'
-route.post('/favorites/:postId', verifyJWT, savingPost);
+// POST => '/users/reading-list/:postId'
+route.post('/reading-list/:postId', verifyJWT, savingPost);
 
-// DELETE => '/users/favorites'
-route.delete('/favorites/:postId', verifyJWT, unSavePost);
+// DELETE => '/users/reading-list/:postId'
+route.delete('/reading-list/:postId', verifyJWT, unSavePost);
 
 export default route;
