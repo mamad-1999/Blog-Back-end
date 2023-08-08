@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import User from '../model/User';
 import Post from '../model/Post';
 
-export const favoritesPost = async (
+export const savingPost = async (
   req: Request<
     { postId: string },
     Record<string, never>,
@@ -30,19 +30,16 @@ export const favoritesPost = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    foundUser.favoritesPost.push(post._id);
+    foundUser.savePost.push(post._id);
     await foundUser.save();
 
-    post.likesCount++;
-    await post.save();
-
-    res.status(200).json({ message: 'Post liked', like: post.likesCount });
+    res.status(200).json({ message: 'Post Saved' });
   } catch (error) {
     next(error);
   }
 };
 
-export const unFavoritesPost = async (
+export const unSavePost = async (
   req: Request<
     { postId: string },
     Record<string, never>,
@@ -69,13 +66,10 @@ export const unFavoritesPost = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    await foundUser.updateOne({ $pull: { favoritesPost: req.params.postId } });
+    await foundUser.updateOne({ $pull: { savePost: req.params.postId } });
     await foundUser.save();
 
-    post.likesCount--;
-    await post.save();
-
-    res.status(200).json({ message: 'Post unLiked', like: post.likesCount });
+    res.status(200).json({ message: 'Post unSaved' });
   } catch (error) {
     next(error);
   }
