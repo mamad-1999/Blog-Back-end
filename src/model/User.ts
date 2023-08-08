@@ -41,7 +41,7 @@ const userModel = new mongoose.Schema<IUser>(
     linkedinProfile: { type: String },
     twitterProfile: { type: String },
     posts: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
-    favoritesCategory: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
+    favoritesCategory: { type: [String] },
     favoritesPost: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     readingList: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     refreshToken: { type: String },

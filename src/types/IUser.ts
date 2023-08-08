@@ -13,7 +13,7 @@ export type IUser = {
   twitterProfile?: string;
   linkedinProfile?: string;
   posts?: [Types.ObjectId];
-  favoritesCategory: [Types.ObjectId];
+  favoritesCategory: string[];
   favoritesPost: [Types.ObjectId];
   readingList: [Types.ObjectId];
   refreshToken: string;

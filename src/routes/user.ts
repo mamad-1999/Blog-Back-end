@@ -35,7 +35,7 @@ route.get('/reading-list/:uid', verifyJWT, getReadingLists);
 // POST => '/users/favorites'
 route.post('/favorites', verifyJWT, favorites);
 
-// DELETE => '/users/favorites'
-route.delete('/favorites', verifyJWT, unFavorites);
+// DELETE => '/users/un-favorites'
+route.post('/un-favorites', verifyJWT, unFavorites);
 
 export default route;
