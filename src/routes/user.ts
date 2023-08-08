@@ -4,7 +4,7 @@ import {
   saveReadingList,
   unSaveReadingList,
   getReadingLists,
-} from '../controller/favorites';
+} from '../controller/readingList';
 import verifyRole from '../middleware/verifyRole';
 import verifyJWT from '../middleware/verifyJWT';
 
