@@ -6,9 +6,10 @@ type Role = 'user' | 'admin' | 'superAdmin';
 const verifyRole = (role: Role) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundUser = await User.findOne({ _id: req.user }).lean().exec();
+      const foundUser = await User.findById(req.user).lean().exec();
+      console.log(req.user);
       if (!foundUser) {
-        return res.status(403).json({ message: 'Forbidden' });
+        return res.status(403).json({ message: 'Forbidden... User not found' });
       }
       if (
         foundUser!.role === role ||
@@ -16,7 +17,7 @@ const verifyRole = (role: Role) => {
       ) {
         next();
       } else {
-        return res.status(403).json({ message: 'Forbidden' });
+        return res.status(403).json({ message: 'Forbidden...' });
       }
     } catch (error) {
       next(error);
