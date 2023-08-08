@@ -21,4 +21,7 @@ route.delete('/:id', verifyJWT, verifyRole('admin'), deleteUser);
 // POST => '/users/favorites'
 route.post('/favorites/:postId', verifyJWT, favoritesPost);
 
+// DELETE => '/users/favorites'
+route.delete('/favorites/:postId', verifyJWT);
+
 export default route;
