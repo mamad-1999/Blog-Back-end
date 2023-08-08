@@ -98,9 +98,17 @@ export const getFavorites = async (
       return res.status(200).json({ message: 'User not found' });
     }
 
+    if (foundUser.favoritesCategory.length === 0) {
+      return res.status(200).json({ message: 'User favorites not found', isEmpty: true });
+    }
+
     res
       .status(200)
-      .json({ message: 'Get favorites successfully', data: foundUser.favoritesCategory });
+      .json({
+        message: 'Get favorites successfully',
+        data: foundUser.favoritesCategory,
+        isEmpty: false,
+      });
   } catch (error) {
     next(error);
   }
