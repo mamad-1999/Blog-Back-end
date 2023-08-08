@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AcceptFavorites } from '../types/favorites';
+import mongoose from 'mongoose';
 import User from '../model/User';
 
 export const favorites = async (
@@ -63,6 +64,43 @@ export const unFavorites = async (
     await foundUser.save();
 
     res.status(200).json({ message: 'unSave favorite' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getFavorites = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    if (req.user?.toString() !== req.params.uid) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized for get this user savePosts' });
+    }
+
+    const foundUser = await User.findById(req.params.uid).select(
+      '-password -refreshToken',
+    );
+
+    if (!foundUser) {
+      return res.status(200).json({ message: 'User not found' });
+    }
+
+    res
+      .status(200)
+      .json({ message: 'Get favorites successfully', data: foundUser.favoritesCategory });
   } catch (error) {
     next(error);
   }
