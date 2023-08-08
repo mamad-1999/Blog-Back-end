@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AcceptFavorites } from '../types/favorites';
 import mongoose from 'mongoose';
 import User from '../model/User';
+import checkCategories from '../validators/favorites';
 
 export const favorites = async (
   req: Request<
@@ -14,6 +15,11 @@ export const favorites = async (
   next: NextFunction,
 ) => {
   try {
+    const checkData = await checkCategories({ ...req.body });
+    if (checkData !== true) {
+      return res.status(400).json({ message: 'Invalid Value' });
+    }
+
     const foundUser = await User.findById(req.user)
       .select('-password -refreshToken')
       .exec();
@@ -47,6 +53,11 @@ export const unFavorites = async (
   next: NextFunction,
 ) => {
   try {
+    const checkData = await checkCategories({ ...req.body });
+    if (checkData !== true) {
+      return res.status(400).json({ message: 'Invalid Value' });
+    }
+
     const foundUser = await User.findById(req.user)
       .select('-password -refreshToken')
       .exec();
