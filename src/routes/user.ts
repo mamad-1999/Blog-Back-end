@@ -1,6 +1,10 @@
 import express from 'express';
 import { updateUser, getUser, getUsers, deleteUser } from '../controller/user';
-import { savingPost, unSavePost, getReadingLists } from '../controller/favorites';
+import {
+  saveReadingList,
+  unSaveReadingList,
+  getReadingLists,
+} from '../controller/favorites';
 import verifyRole from '../middleware/verifyRole';
 import verifyJWT from '../middleware/verifyJWT';
 
@@ -19,10 +23,10 @@ route.get('/', verifyJWT, verifyRole('admin'), getUsers);
 route.delete('/:id', verifyJWT, verifyRole('admin'), deleteUser);
 
 // POST => '/users/reading-list/:postId'
-route.post('/reading-list/:postId', verifyJWT, savingPost);
+route.post('/reading-list/:postId', verifyJWT, saveReadingList);
 
 // DELETE => '/users/reading-list/:postId'
-route.delete('/reading-list/:postId', verifyJWT, unSavePost);
+route.delete('/reading-list/:postId', verifyJWT, unSaveReadingList);
 
 // GET => '/users/reading-list/:uid'
 route.get('/reading-list/:uid', verifyJWT, getReadingLists);

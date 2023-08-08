@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import User from '../model/User';
 import Post from '../model/Post';
 
-export const savingPost = async (
+export const saveReadingList = async (
   req: Request<
     { postId: string },
     Record<string, never>,
@@ -30,7 +30,7 @@ export const savingPost = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    foundUser.savePost.push(post._id);
+    foundUser.readingList.push(post._id);
     await foundUser.save();
 
     res.status(200).json({ message: 'Post Saved' });
@@ -39,7 +39,7 @@ export const savingPost = async (
   }
 };
 
-export const unSavePost = async (
+export const unSaveReadingList = async (
   req: Request<
     { postId: string },
     Record<string, never>,
@@ -110,11 +110,11 @@ export const getReadingLists = async (
       return res.status(404).json({ message: 'User readingList not found' });
     }
 
-    const totalSavePosts = userSavePosts.savePost.length;
+    const totalSavePosts = userSavePosts.readingList.length;
 
     res.status(200).json({
       message: 'Get reading list successfully',
-      data: userSavePosts.savePost,
+      data: userSavePosts.readingList,
       totalPosts: totalSavePosts,
       currentPage: pageNumber,
       nextPage: pageNumber + 1,

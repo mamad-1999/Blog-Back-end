@@ -15,7 +15,7 @@ export type IUser = {
   posts?: [Types.ObjectId];
   favoritesCategory: [Types.ObjectId];
   favoritesPost: [Types.ObjectId];
-  savePost: [Types.ObjectId];
+  readingList: [Types.ObjectId];
   refreshToken: string;
 };
 

@@ -43,7 +43,7 @@ const userModel = new mongoose.Schema<IUser>(
     posts: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     favoritesCategory: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     favoritesPost: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
-    savePost: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
+    readingList: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     refreshToken: { type: String },
   },
   { timestamps: true },
