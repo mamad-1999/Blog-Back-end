@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { AcceptFavorites } from '../types/favorites';
+import { IFavorites } from '../types/IFavorites';
 import mongoose from 'mongoose';
 import User from '../model/User';
-import checkCategories from '../validators/favorites';
+import checkCategories from '../validators/categories';
 
 export const favorites = async (
   req: Request<
     Record<string, never>,
     Record<string, never>,
-    { category: AcceptFavorites },
+    { category: IFavorites },
     Record<string, never>
   >,
   res: Response,
@@ -46,7 +46,7 @@ export const unFavorites = async (
   req: Request<
     Record<string, never>,
     Record<string, never>,
-    { category: AcceptFavorites },
+    { category: IFavorites },
     Record<string, never>
   >,
   res: Response,

@@ -1,4 +1,4 @@
-export type AcceptFavorites =
+export type IFavorites =
   | 'economy'
   | 'law'
   | 'programming'
