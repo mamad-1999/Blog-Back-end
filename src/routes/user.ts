@@ -5,7 +5,7 @@ import {
   unSaveReadingList,
   getReadingLists,
 } from '../controller/readingList';
-import { favorites } from '../controller/favorites';
+import { favorites, unFavorites } from '../controller/favorites';
 import verifyRole from '../middleware/verifyRole';
 import verifyJWT from '../middleware/verifyJWT';
 
@@ -34,5 +34,8 @@ route.get('/reading-list/:uid', verifyJWT, getReadingLists);
 
 // POST => '/users/favorites/:postId'
 route.post('/favorites/:postId', verifyJWT, favorites);
+
+// DELETE => '/users/favorites/:postId'
+route.delete('/favorites/:postId', verifyJWT, unFavorites);
 
 export default route;
