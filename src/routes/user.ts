@@ -1,5 +1,6 @@
 import express from 'express';
 import { updateUser, getUser, getUsers, deleteUser } from '../controller/user';
+import { favoritesPost } from '../controller/favorites';
 import verifyRole from '../middleware/verifyRole';
 import verifyJWT from '../middleware/verifyJWT';
 
@@ -16,5 +17,8 @@ route.get('/', verifyJWT, verifyRole('admin'), getUsers);
 
 // DELETE => '/users/:id' /* admin */
 route.delete('/:id', verifyJWT, verifyRole('admin'), deleteUser);
+
+// POST => '/users/favorites'
+route.post('/favorites/:postId', verifyJWT, favoritesPost);
 
 export default route;
