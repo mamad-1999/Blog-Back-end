@@ -4,6 +4,7 @@ import User from '../model/User';
 import { IUpdateUser } from '../types/IUser';
 import checkUserData from '../validators/user';
 import errorHandler from '../utils/errorHandler';
+import Post from '../model/Post';
 
 export const updateUser = async (
   req: Request<{ id: string }, Record<string, never>, IUpdateUser, Record<string, never>>,
@@ -164,16 +165,21 @@ export const getPostsByUserId = async (
 
     const userPosts = await User.findById(req.params.uid)
       .select('-password -refreshToken')
-      .populate({ path: 'posts', populate: { path: '_id' } })
-      .sort({ _id: 1 })
-      .skip((pageNumber - 1) * postPerPage)
-      .limit(postPerPage);
+      .populate({
+        path: 'posts',
+        populate: { path: '_id' },
+        options: {
+          skip: (pageNumber - 1) * postPerPage,
+          limit: postPerPage,
+          sort: { _id: 1 },
+        },
+      });
 
     if (!userPosts) {
       return res.status(404).json({ message: 'User Posts not found' });
     }
 
-    const totalPosts = userPosts.posts?.length || 0;
+    const totalPosts = await Post.countDocuments({ userId: req.params.uid });
 
     res.status(200).json({
       message: 'Get Posts successfully',
