@@ -163,6 +163,10 @@ export const getPostsByUserId = async (
     const pageNumber = parseInt(req.query.page || '1');
     const postPerPage = parseInt(req.query.limit || '4');
 
+    if (isNaN(pageNumber) || isNaN(postPerPage)) {
+      return res.status(400).json({ message: 'Page and limit must be numbers' });
+    }
+
     const userPosts = await User.findById(req.params.uid)
       .select('-password -refreshToken')
       .populate({
