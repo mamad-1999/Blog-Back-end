@@ -86,6 +86,10 @@ export const getUsers = async (
 ) => {
   const pageNumber = parseInt(req.query.page || '1');
   const userPerPage = parseInt(req.query.limit || '4');
+
+  if (isNaN(pageNumber) || isNaN(userPerPage)) {
+    return res.status(400).json({ message: 'Page and limit must be numbers' });
+  }
   try {
     const users = await User.find({ role: 'user' })
       .select('-password -refreshToken')

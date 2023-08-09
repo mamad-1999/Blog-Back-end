@@ -163,6 +163,10 @@ export const getPosts = async (
   const pageNumber = parseInt(query.page || '1');
   const postPerPage = parseInt(query.limit || '2');
 
+  if (isNaN(pageNumber) || isNaN(postPerPage)) {
+    return res.status(400).json({ message: 'Page and limit must be numbers' });
+  }
+
   const filters: PostFilters = {};
   if (query.search) {
     filters.title = {
