@@ -1,5 +1,11 @@
 import express from 'express';
-import { updateUser, getUser, getUsers, deleteUser } from '../controller/user';
+import {
+  updateUser,
+  getUser,
+  getUsers,
+  deleteUser,
+  getPostsByUserId,
+} from '../controller/user';
 import {
   saveReadingList,
   unSaveReadingList,
@@ -40,5 +46,8 @@ route.post('/un-favorites', verifyJWT, unFavorites);
 
 // GET => '/users/favorites/:uid'
 route.get('/favorites/:uid', verifyJWT, getFavorites);
+
+// GET => '/users/my-post/:uid'
+route.get('/my-post/:uid', verifyJWT, getPostsByUserId);
 
 export default route;
