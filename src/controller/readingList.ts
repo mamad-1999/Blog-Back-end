@@ -98,13 +98,21 @@ export const getReadingLists = async (
     const pageNumber = parseInt(req.query.page || '1');
     const postPerPage = parseInt(req.query.limit || '6');
 
+    if (isNaN(pageNumber) || isNaN(postPerPage)) {
+      return res.status(400).json({ message: 'Page and limit must be numbers' });
+    }
+
     const userSavePosts = await User.findById(req.params.uid)
-      .populate({ path: 'savePost', populate: { path: '_id' } })
-      .lean()
       .select('-password -refreshToken')
-      .sort({ _id: 1 })
-      .skip((pageNumber - 1) * postPerPage)
-      .limit(postPerPage);
+      .populate({
+        path: 'readingList',
+        populate: { path: '_id' },
+        options: {
+          skip: (pageNumber - 1) * postPerPage,
+          limit: postPerPage,
+          sort: { _id: 1 },
+        },
+      });
 
     if (!userSavePosts) {
       return res.status(404).json({ message: 'User readingList not found' });
