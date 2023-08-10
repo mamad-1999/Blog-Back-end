@@ -14,15 +14,15 @@ export const updateAdmin = async (
       return res.status(400).json({ message: 'Invalid id' });
     }
 
-    const foundUser = await User.findById(req.user)
+    const foundAdmin = await User.findById(req.user)
       .select('-password -refreshToken')
       .exec();
 
-    if (!foundUser) {
+    if (!foundAdmin) {
       return res.status(404).json({ message: 'Admin not found' });
     }
 
-    if (foundUser.role !== 'admin' && req.user?.toString() !== req.params.id) {
+    if (foundAdmin.role !== 'admin' && req.user?.toString() !== req.params.id) {
       return res
         .status(401)
         .json({ message: 'You are not Authorized to update this user' });
@@ -62,18 +62,18 @@ export const deleteAdmin = async (
       return res.status(400).json({ message: 'Invalid id' });
     }
 
-    const foundUser = await User.findById(req.params.id)
+    const foundAdmin = await User.findById(req.params.id)
       .select('-password -refreshToken')
       .exec();
 
-    if (!foundUser || foundUser.role !== 'admin') {
+    if (!foundAdmin || foundAdmin.role !== 'admin') {
       return res.status(404).json({ message: 'Admin not found' });
     }
 
-    foundUser.role = 'user';
-    await foundUser.save();
+    foundAdmin.role = 'user';
+    await foundAdmin.save();
 
-    res.status(200).json({ message: 'Admin deleted', data: foundUser });
+    res.status(200).json({ message: 'Admin deleted', data: foundAdmin });
   } catch (error) {
     next(error);
   }
