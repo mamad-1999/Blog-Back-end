@@ -66,7 +66,7 @@ export const unSaveReadingList = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    await foundUser.updateOne({ $pull: { savePost: req.params.postId } });
+    await foundUser.updateOne({ $pull: { readingList: req.params.postId } });
     await foundUser.save();
 
     res.status(200).json({ message: 'Post unSaved' });
@@ -93,7 +93,7 @@ export const getReadingLists = async (
     if (req.user?.toString() !== req.params.uid) {
       return res
         .status(401)
-        .json({ message: 'You are not Authorized for get this user savePosts' });
+        .json({ message: 'You are not Authorized for get this user ReadingLists' });
     }
     const pageNumber = parseInt(req.query.page || '1');
     const postPerPage = parseInt(req.query.limit || '6');
@@ -102,7 +102,7 @@ export const getReadingLists = async (
       return res.status(400).json({ message: 'Page and limit must be numbers' });
     }
 
-    const userSavePosts = await User.findById(req.params.uid)
+    const userReadingLists = await User.findById(req.params.uid)
       .select('-password -refreshToken')
       .populate({
         path: 'readingList',
@@ -114,22 +114,22 @@ export const getReadingLists = async (
         },
       });
 
-    if (!userSavePosts) {
+    if (!userReadingLists) {
       return res.status(404).json({ message: 'User readingList not found' });
     }
 
-    const totalSavePosts = userSavePosts.readingList.length;
+    const totalReadingLists = userReadingLists.readingList.length;
 
     res.status(200).json({
       message: 'Get reading list successfully',
-      data: userSavePosts.readingList,
-      totalPosts: totalSavePosts,
+      data: userReadingLists.readingList,
+      totalPosts: totalReadingLists,
       currentPage: pageNumber,
       nextPage: pageNumber + 1,
       previousPage: pageNumber - 1,
-      hasNextPage: postPerPage * pageNumber < totalSavePosts,
+      hasNextPage: postPerPage * pageNumber < totalReadingLists,
       hasPreviousPage: pageNumber > 1,
-      lastPage: Math.ceil(totalSavePosts / postPerPage),
+      lastPage: Math.ceil(totalReadingLists / postPerPage),
     });
   } catch (error) {
     next(error);
