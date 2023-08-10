@@ -78,3 +78,35 @@ export const deleteAdmin = async (
     next(error);
   }
 };
+
+export const createAdmin = async (
+  req: Request<
+    Record<string, never>,
+    Record<string, never>,
+    { email: string },
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const newAdmin = await User.findOne({ email: req.body.email })
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!newAdmin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    if (newAdmin && newAdmin.role === 'admin') {
+      return res.status(400).json({ message: 'Admin already existed' });
+    }
+
+    newAdmin.role = 'admin';
+    await newAdmin.save();
+
+    res.status(200).json({ message: 'New admin created', data: newAdmin });
+  } catch (error) {
+    next(error);
+  }
+};
