@@ -152,3 +152,35 @@ export const getAdmins = async (
     next(error);
   }
 };
+
+export const getAdmin = async (
+  req: Request<
+    { aid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.aid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+    const foundAdmin = await User.findById(req.params.aid)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundAdmin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    if (foundAdmin && foundAdmin.role !== 'admin') {
+      return res.status(400).json({ message: 'This user is not Admin' });
+    }
+
+    res.status(200).json({ message: 'Admin get successfully', data: foundAdmin });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,7 +1,7 @@
 import express from 'express';
 import verifyJWT from '../middleware/verifyJWT';
 import verifyRole from '../middleware/verifyRole';
-import { createAdmin, deleteAdmin, updateAdmin } from '../controller/admin';
+import { createAdmin, deleteAdmin, getAdmin, updateAdmin } from '../controller/admin';
 
 const route = express.Router();
 
@@ -16,5 +16,8 @@ route.post('/', verifyJWT, verifyRole('superAdmin'), createAdmin);
 
 // GET => '/admins'
 route.get('/', verifyJWT, verifyRole('superAdmin'));
+
+// GET => '/admins/:aid'
+route.get('/:aid', verifyJWT, verifyRole('admin'), getAdmin);
 
 export default route;
