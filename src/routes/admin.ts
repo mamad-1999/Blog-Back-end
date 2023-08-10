@@ -5,13 +5,16 @@ import { createAdmin, deleteAdmin, updateAdmin } from '../controller/admin';
 
 const route = express.Router();
 
-// PUT => '/admin/:id'
+// PUT => '/admins/:id'
 route.put('/:id', verifyJWT, verifyRole('admin'), updateAdmin);
 
-// DELETE => '/admin/:id'
+// DELETE => '/admins/:id'
 route.delete('/:id', verifyJWT, verifyRole('superAdmin'), deleteAdmin);
 
-// POST => '/admin/:id'
+// POST => '/admins/:id'
 route.post('/', verifyJWT, verifyRole('superAdmin'), createAdmin);
+
+// GET => '/admins'
+route.get('/', verifyJWT, verifyRole('superAdmin'));
 
 export default route;

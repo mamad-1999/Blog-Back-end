@@ -110,3 +110,45 @@ export const createAdmin = async (
     next(error);
   }
 };
+
+export const getAdmins = async (
+  req: Request<
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>,
+    { page?: string; limit?: string }
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const pageNumber = parseInt(req.query.page || '1');
+    const adminPerPage = parseInt(req.query.limit || '4');
+
+    if (isNaN(pageNumber) || isNaN(adminPerPage)) {
+      return res.status(400).json({ message: 'Page and limit must be numbers' });
+    }
+
+    const admins = await User.find({ role: 'admin' })
+      .select('-password -refreshToken')
+      .sort({ _id: 1 })
+      .skip((pageNumber - 1) * adminPerPage)
+      .limit(adminPerPage);
+
+    const totalAdmins = await User.countDocuments({ role: 'admin' });
+
+    res.status(200).json({
+      message: 'Get admins successfully',
+      data: admins,
+      totalPosts: totalAdmins,
+      currentPage: pageNumber,
+      nextPage: pageNumber + 1,
+      previousPage: pageNumber - 1,
+      hasNextPage: adminPerPage * pageNumber < totalAdmins,
+      hasPreviousPage: pageNumber > 1,
+      lastPage: Math.ceil(totalAdmins / adminPerPage),
+    });
+  } catch (error) {
+    next(error);
+  }
+};

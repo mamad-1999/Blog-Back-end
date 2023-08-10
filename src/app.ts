@@ -35,7 +35,7 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
-app.use('/admin', adminRouter);
+app.use('/admins', adminRouter);
 
 app.all('*', (req: Request, res: Response) => {
   res.status(404).json({ message: '404 Not Found' });
