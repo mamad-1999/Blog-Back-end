@@ -19,7 +19,7 @@ export const updateAdmin = async (
       .exec();
 
     if (!foundUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'Admin not found' });
     }
 
     if (foundUser.role !== 'admin' && req.user?.toString() !== req.params.id) {
@@ -42,6 +42,38 @@ export const updateAdmin = async (
     }
 
     res.status(200).json({ message: 'Update admin successfully', data: updatedAdmin });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAdmin = async (
+  req: Request<
+    { id: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const foundUser = await User.findById(req.params.id)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser || foundUser.role !== 'admin') {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    foundUser.role = 'user';
+    await foundUser.save();
+
+    res.status(200).json({ message: 'Admin deleted', data: foundUser });
   } catch (error) {
     next(error);
   }
