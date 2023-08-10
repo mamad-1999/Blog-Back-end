@@ -13,6 +13,7 @@ import connectDB from './database/connectDB';
 import authRouter from './routes/auth';
 import postRouter from './routes/post';
 import userRouter from './routes/user';
+import adminRouter from './routes/admin';
 import errorController from './middleware/errorController';
 
 const app = express();
@@ -34,6 +35,7 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
+app.use('/admin', adminRouter);
 
 app.all('*', (req: Request, res: Response) => {
   res.status(404).json({ message: '404 Not Found' });
