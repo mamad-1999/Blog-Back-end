@@ -15,6 +15,11 @@ export const updateUser = async (
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: 'Invalid id' });
     }
+
+    if (req.user?.toString() !== req.params.id) {
+      return res.status(401).json({ message: 'You are not Authorized update this user' });
+    }
+
     const foundUser = await User.findById(req.params.id).select(
       '-password -refreshToken',
     );
@@ -62,12 +67,32 @@ export const getUser = async (
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: 'Invalid id' });
     }
+
     const foundUser = await User.findById(req.params.id).select(
       '-password -refreshToken',
     );
     if (!foundUser) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    if (foundUser && foundUser.role !== 'user') {
+      return res.status(400).json({ message: "You can't get this user data" });
+    }
+
+    const userRequest = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (userRequest?.role === 'superAdmin' || userRequest?.role === 'admin') {
+      return res.status(200).json({ message: 'User get successfully', data: foundUser });
+    }
+
+    if (req.user?.toString() !== req.params.id) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized for get this user info' });
+    }
+
     res.status(200).json({ message: 'User get data successfully', foundUser });
   } catch (error) {
     next(error);
@@ -129,9 +154,18 @@ export const deleteUser = async (
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: 'Invalid id' });
     }
-    const deleteUser = await User.findByIdAndDelete(req.params.id).select(
+
+    const foundUser = await User.findById(req.params.id).select(
       '-password -refreshToken',
     );
+
+    if (foundUser?.role === 'admin' || foundUser?.role === 'superAdmin') {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized to delete this user' });
+    }
+
+    await User.deleteOne({ _id: req.params.id });
 
     if (!deleteUser) {
       return res.status(404).json({ message: 'User not found' });

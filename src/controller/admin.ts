@@ -22,7 +22,7 @@ export const updateAdmin = async (
       return res.status(404).json({ message: 'Admin not found' });
     }
 
-    if (foundAdmin.role !== 'admin' && req.user?.toString() !== req.params.id) {
+    if (foundAdmin.role !== 'admin' || req.user?.toString() !== req.params.id) {
       return res
         .status(401)
         .json({ message: 'You are not Authorized to update this user' });
@@ -177,6 +177,22 @@ export const getAdmin = async (
 
     if (foundAdmin && foundAdmin.role !== 'admin') {
       return res.status(400).json({ message: 'This user is not Admin' });
+    }
+
+    const userRequest = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (userRequest?.role === 'superAdmin') {
+      return res
+        .status(200)
+        .json({ message: 'Admin get successfully', data: foundAdmin });
+    }
+
+    if (req.user?.toString() !== req.params.aid) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized for get this admin info' });
     }
 
     res.status(200).json({ message: 'Admin get successfully', data: foundAdmin });
