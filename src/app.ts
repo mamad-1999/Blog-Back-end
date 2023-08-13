@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import path from 'path';
 dotenv.config();
 import express, { Response, Request } from 'express';
 import cookieParser from 'cookie-parser';
@@ -33,6 +34,8 @@ app.use(express.json());
 
 app.use(helmet());
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
