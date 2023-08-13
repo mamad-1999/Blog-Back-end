@@ -5,6 +5,9 @@ import User from '../model/User';
 import Post from '../model/Post';
 import { IAddPost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
+import { uploadImage } from '../utils/multer';
+import { nanoid } from 'nanoid';
+import sharp from 'sharp';
 
 export const createPost = async (
   req: Request<
@@ -16,30 +19,52 @@ export const createPost = async (
   res: Response,
   next: NextFunction,
 ) => {
-  try {
-    const checkData = await checkPostValidator({ ...req.body });
-    if (checkData !== true) {
-      errorHandler('Invalid inputs', 400, checkData);
-    }
-
-    const foundUser = await User.findOne({ _id: req.user })
-      .select('-password -refreshToken')
-      .exec();
-
-    if (!foundUser) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const newPost = new Post({ ...req.body, userId: req.user });
-    const savePost = await newPost.save();
-
-    foundUser?.posts?.push(savePost as never);
-    await foundUser.save();
-
-    res.status(201).json({ message: 'Post saved successfully', savePost });
-  } catch (error) {
-    next(error);
+  const checkData = await checkPostValidator({ ...req.body });
+  if (checkData !== true) {
+    errorHandler('Invalid inputs', 400, checkData);
   }
+  uploadImage.single('image')(req, res, async (err) => {
+    try {
+      if (err) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ message: 'Maximum size is 6MB' });
+        }
+        res.status(400).json({ err });
+      } else {
+        if (req.file) {
+          const foundUser = await User.findOne({ _id: req.user })
+            .select('-password -refreshToken')
+            .exec();
+
+          if (!foundUser) {
+            return res.status(401).json({ message: 'Unauthorized' });
+          }
+          const fileUploadName = `${nanoid()}_${req.file.originalname}`;
+          await sharp(req.file.buffer)
+            .jpeg({ quality: 60 })
+            .toFile(`../public/images/${fileUploadName}`)
+            .catch((error) => {
+              next(error);
+            });
+          const newPost = new Post({
+            ...req.body,
+            image: req.file.path,
+            userId: req.user,
+          });
+          const savePost = await newPost.save();
+
+          foundUser?.posts?.push(savePost as never);
+          await foundUser.save();
+
+          res.status(201).json({ message: 'Post saved successfully', savePost });
+        } else {
+          res.status(400).json({ message: 'Please upload the Post image' });
+        }
+      }
+    } catch (error) {
+      next(err);
+    }
+  });
 };
 
 export const deletePost = async (

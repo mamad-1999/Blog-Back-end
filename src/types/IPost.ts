@@ -12,7 +12,6 @@ export type IPost = {
 
 export type IAddPost = {
   title: string;
-  image: string;
   description: string;
   tags?: [string];
 };
