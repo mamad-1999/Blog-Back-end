@@ -6,7 +6,6 @@ import Post from '../model/Post';
 import { IAddPost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
 import { uploadImage } from '../utils/multer';
-import { nanoid } from 'nanoid';
 import sharp from 'sharp';
 
 export const createPost = async (
@@ -39,7 +38,7 @@ export const createPost = async (
           if (!foundUser) {
             return res.status(401).json({ message: 'Unauthorized' });
           }
-          const fileUploadName = `${nanoid()}_${req.file.originalname}`;
+          const fileUploadName = `${new Date().toString()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({ quality: 60 })
             .toFile(`../public/images/${fileUploadName}`)

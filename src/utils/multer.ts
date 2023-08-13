@@ -1,6 +1,5 @@
 import multer, { FileFilterCallback } from 'multer';
 import { Request } from 'express';
-import { nanoid } from 'nanoid';
 
 type DestinationCallbackType = (error: Error | null, destination: string) => void;
 type FileNameCallbackType = (error: Error | null, filename: string) => void;
@@ -16,7 +15,7 @@ const storage = multer.diskStorage({
     callback(null, '../public/images');
   },
   filename: (req: Request, file: Express.Multer.File, callback: FileNameCallbackType) => {
-    callback(null, `${nanoid()}_${file.originalname}`);
+    callback(null, `${new Date().toString()}_${file.originalname}`);
   },
 });
 

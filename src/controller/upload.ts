@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../model/User';
 import sharp from 'sharp';
 import { uploadImage } from '../utils/multer';
-import { nanoid } from 'nanoid';
 
 export const uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,7 +20,7 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
           if (!foundUser) {
             return res.status(404).json({ message: 'User not found' });
           }
-          const fileUploadName = `${nanoid()}_${req.file.originalname}`;
+          const fileUploadName = `${new Date().toString()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({ quality: 70 })
             .toFile(`../public/images/${fileUploadName}`)
