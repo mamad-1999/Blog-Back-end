@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'src', 'uploads')));
 
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
