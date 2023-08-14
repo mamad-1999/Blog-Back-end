@@ -38,10 +38,10 @@ export const createPost = async (
           if (!foundUser) {
             return res.status(401).json({ message: 'Unauthorized' });
           }
-          const fileUploadName = `${new Date().toString()}_${req.file.originalname}`;
+          const fileUploadName = `${new Date().toISOString()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({ quality: 60 })
-            .toFile(`../public/images/${fileUploadName}`)
+            .toFile(`./public/images/${fileUploadName}`)
             .catch((error) => {
               next(error);
             });

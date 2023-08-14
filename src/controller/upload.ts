@@ -5,12 +5,12 @@ import { uploadImage } from '../utils/multer';
 
 export const uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    uploadImage.single('image')(req, res, async (err) => {
+    uploadImage.single('avatar')(req, res, async (err) => {
       if (err) {
         if (err.code === 'LIMIT_FILE_SIZE') {
           return res.status(400).json({ message: 'Maximum size is 6MB' });
         }
-        res.status(400).json({ err });
+        res.status(400).json({ message: 'Error', err });
       } else {
         if (req.file) {
           const foundUser = await User.findById(req.user)
@@ -20,22 +20,18 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
           if (!foundUser) {
             return res.status(404).json({ message: 'User not found' });
           }
-          const fileUploadName = `${new Date().toString()}_${req.file.originalname}`;
-          await sharp(req.file.buffer)
+          const fileUploadName = `${new Date().toISOString()}_${req.file.originalname}`;
+          await sharp(req.file.path)
             .jpeg({ quality: 70 })
-            .toFile(`../public/images/${fileUploadName}`)
-            .catch((err) => {
-              return res
-                .status(400)
-                .json({ message: 'Something was wrong... Please try again', err });
-            });
+            .resize(300, 300)
+            .toFile(`src/uploads/sharp-${fileUploadName}`);
 
-          foundUser.image = `/images/${fileUploadName}`;
+          foundUser.image = `/src/uploads/sharp-${fileUploadName}`;
           await foundUser.save();
 
           res.status(200).json({
             message: 'User image profile update',
-            pathImage: `/images/${fileUploadName}`,
+            pathImage: `/src/uploads/sharp-${fileUploadName}`,
           });
         } else {
           res.status(500).json({ message: 'No file uploaded' });

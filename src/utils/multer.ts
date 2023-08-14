@@ -12,10 +12,10 @@ const storage = multer.diskStorage({
     file: Express.Multer.File,
     callback: DestinationCallbackType,
   ) => {
-    callback(null, '../public/images');
+    callback(null, 'src/uploads/');
   },
   filename: (req: Request, file: Express.Multer.File, callback: FileNameCallbackType) => {
-    callback(null, `${new Date().toString()}_${file.originalname}`);
+    callback(null, `${new Date().toISOString()}_${file.originalname}`);
   },
 });
 
@@ -33,6 +33,7 @@ const fileFilter = (
 
 export const uploadImage = multer({
   storage,
+  // dest: 'images',
   limits: { fileSize: 6000000 },
   fileFilter,
 });

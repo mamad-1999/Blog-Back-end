@@ -35,14 +35,14 @@ app.use(express.json());
 app.use(helmet());
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
 app.use('/admins', adminRouter);
 app.use('/super-admin', superAdminRouter);
-app.use('upload', uploadImageRouter);
+app.use('/upload', uploadImageRouter);
 
 app.all('*', (req: Request, res: Response) => {
   res.status(404).json({ message: '404 Not Found' });
