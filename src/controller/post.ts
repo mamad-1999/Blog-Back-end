@@ -223,6 +223,7 @@ export const getPosts = async (
   }
 };
 
+// Like and Unlike
 export const likePost = async (
   req: Request<
     { id: string },
@@ -251,25 +252,23 @@ export const likePost = async (
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    if (post.likesCount.includes(req.user!)) {
-      await post.updateOne({ $pull: { likesCount: req.user } });
+    if (post.likes.includes(req.user!)) {
+      await post.updateOne({ $pull: { likes: req.user } });
       await post.save();
 
       await foundUser.updateOne({ $pull: { favoritesPost: post.id } });
       await foundUser.save();
-      return res
-        .status(200)
-        .json({ message: 'Post Unlike', likesCount: post.likesCount.length });
+      return res.status(200).json({ message: 'Post Unlike', likes: post.likes.length });
     }
 
     // If post doesn't like this code run
-    post.likesCount.push(req.user!);
+    post.likes.push(req.user!);
     await post.save();
 
     foundUser.favoritesPost.push(post.id);
     await foundUser.save();
 
-    res.status(200).json({ message: 'Post Like', likesCount: post.likesCount.length });
+    res.status(200).json({ message: 'Post Like', likes: post.likes.length });
   } catch (error) {
     next(error);
   }

@@ -6,7 +6,7 @@ export type IPost = {
   description: string;
   userId: Types.ObjectId;
   reviews: [Types.ObjectId];
-  likesCount: [Types.ObjectId];
+  likes: [Types.ObjectId];
   tags: [string];
 };
 

@@ -18,7 +18,7 @@ const postModel = new mongoose.Schema<IPost>(
       type: String,
       required: true,
     },
-    likesCount: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    likes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     userId: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
