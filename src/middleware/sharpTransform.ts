@@ -8,7 +8,7 @@ const sharpTransform = (req: Request, res: Response, next: NextFunction) => {
     .resize(500, 500)
     .toFile(`src/uploads/sharp-${req.file?.filename}`, (err) => {
       if (err) {
-        return res.status(400).json({ err });
+        return res.status(400).json({ message: 'Error', err });
       }
 
       fileDelete(req.file!.path);

@@ -31,3 +31,27 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const removeAvatar = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const foundUser = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (foundUser && foundUser.image) {
+      fileDelete(foundUser.image);
+      foundUser.image = '';
+      await foundUser.save();
+
+      return res.status(200).json({ message: 'Your avatar deleted' });
+    }
+
+    res.status(400).json({ message: "You don't have any avatar" });
+  } catch (error) {
+    next(error);
+  }
+};
