@@ -6,6 +6,7 @@ import {
   getPost,
   getPosts,
   likePost,
+  getPostLikes,
 } from '../controller/post';
 import verifyJWT from '../middleware/verifyJWT';
 import { uploadImage } from '../utils/multer';
@@ -45,5 +46,8 @@ route.get('/', getPosts);
 
 // POST => '/posts/like/:id'
 route.post('/like/:id', verifyJWT, likePost);
+
+// GET => '/posts/post-likes/:uid'
+route.get('/post-likes/:uid', verifyJWT, getPostLikes);
 
 export default route;
