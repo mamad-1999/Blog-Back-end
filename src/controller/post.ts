@@ -101,10 +101,10 @@ export const updatePost = async (
     return res.status(400).json({ message: 'Invalid id' });
   }
   try {
-    const checkData = await checkPostValidator({ ...req.body });
-    if (checkData !== true) {
-      errorHandler('Invalid inputs', 400, checkData);
-    }
+    // const checkData = await checkPostValidator({ ...req.body });
+    // if (checkData !== true) {
+    //   errorHandler('Invalid inputs', 400, checkData);
+    // }
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
@@ -122,15 +122,29 @@ export const updatePost = async (
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    let updatedData;
+    const postImage = post.image;
+
+    if (req.file) {
+      updatedData = { ...req.body, image: req.file.path };
+    } else {
+      updatedData = { ...req.body };
+    }
+
     const postUpdated = await Post.findByIdAndUpdate(
       req.params.id,
       {
-        $set: { ...req.body },
+        $set: updatedData,
       },
       { new: true },
     );
+
     if (!postUpdated) {
       return res.status(500).json({ message: 'Update Post was wrong!... Try again' });
+    }
+
+    if (postUpdated.image !== postImage) {
+      fileDelete(postImage);
     }
 
     res.status(200).json({ message: 'Update Post successfully', postUpdated });

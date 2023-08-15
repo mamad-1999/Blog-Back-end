@@ -27,7 +27,14 @@ route.post(
 route.delete('/:id', verifyJWT, deletePost);
 
 // PUT => '/posts/:id'
-route.put('/:id', verifyJWT, updatePost);
+route.put(
+  '/:id',
+  verifyJWT,
+  uploadImage.single('image'),
+  sharpTransform,
+  handleMulterError,
+  updatePost,
+);
 
 // GET => '/posts/:id'
 route.get('/:id', getPost);
