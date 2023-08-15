@@ -15,7 +15,7 @@ import authRouter from './routes/auth';
 import postRouter from './routes/post';
 import userRouter from './routes/user';
 import adminRouter from './routes/admin';
-import uploadImageRouter from './routes/upload';
+import uploadImageRouter from './routes/profile';
 import superAdminRouter from './routes/superAdmin';
 import errorController from './middleware/errorController';
 
@@ -42,7 +42,7 @@ app.use('/posts', postRouter);
 app.use('/users', userRouter);
 app.use('/admins', adminRouter);
 app.use('/super-admin', superAdminRouter);
-app.use('/upload', uploadImageRouter);
+app.use('/profile', uploadImageRouter);
 
 app.all('*', (req: Request, res: Response) => {
   res.status(404).json({ message: '404 Not Found' });

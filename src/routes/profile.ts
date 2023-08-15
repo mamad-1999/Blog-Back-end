@@ -1,6 +1,6 @@
 import express from 'express';
 import verifyJWT from '../middleware/verifyJWT';
-import { uploadProfile } from '../controller/upload';
+import { uploadProfile } from '../controller/profile';
 import sharpTransform from '../middleware/sharpTransform';
 import { uploadImage } from '../utils/multer';
 import handleMulterError from '../middleware/handleMulterError';
@@ -8,7 +8,7 @@ import handleMulterError from '../middleware/handleMulterError';
 const route = express.Router();
 
 route.post(
-  '/profile-img',
+  '/upload-avatar',
   verifyJWT,
   uploadImage.single('avatar'),
   handleMulterError,
