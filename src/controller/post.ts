@@ -3,7 +3,7 @@ import checkPostValidator from '../validators/post';
 import errorHandler from '../utils/errorHandler';
 import User from '../model/User';
 import Post from '../model/Post';
-import { IAddPost, PostFilters } from '../types/IPost';
+import { IAddPost, IUpdatePost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
 import fileDelete from '../utils/fileDeleter';
 
@@ -93,7 +93,7 @@ export const deletePost = async (
 };
 
 export const updatePost = async (
-  req: Request<{ id: string }, Record<string, never>, IAddPost, Record<string, never>>,
+  req: Request<{ id: string }, Record<string, never>, IUpdatePost, Record<string, never>>,
   res: Response,
   next: NextFunction,
 ) => {
@@ -101,10 +101,10 @@ export const updatePost = async (
     return res.status(400).json({ message: 'Invalid id' });
   }
   try {
-    // const checkData = await checkPostValidator({ ...req.body });
-    // if (checkData !== true) {
-    //   errorHandler('Invalid inputs', 400, checkData);
-    // }
+    const checkData = await checkPostValidator({ ...req.body });
+    if (checkData !== true) {
+      errorHandler('Invalid inputs', 400, checkData);
+    }
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });

@@ -16,6 +16,12 @@ export type IAddPost = {
   tags?: [string];
 };
 
+export type IUpdatePost = {
+  title?: string;
+  description?: string;
+  tags?: [string];
+};
+
 export interface PostFilters {
   title?: {
     $regex: RegExp;
