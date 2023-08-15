@@ -7,11 +7,21 @@ import {
   getPosts,
 } from '../controller/post';
 import verifyJWT from '../middleware/verifyJWT';
+import { uploadImage } from '../utils/multer';
+import sharpTransform from '../middleware/sharpTransform';
+import handleMulterError from '../middleware/handleMulterError';
 
 const route = express.Router();
 
 // POST => '/posts'
-route.post('/', verifyJWT, createPost);
+route.post(
+  '/',
+  verifyJWT,
+  uploadImage.single('image'),
+  sharpTransform,
+  handleMulterError,
+  createPost,
+);
 
 // DELETE => '/posts/:id'
 route.delete('/:id', verifyJWT, deletePost);
