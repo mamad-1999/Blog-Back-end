@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../model/User';
+import fileDelete from '../utils/fileDeleter';
 
 export const uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -12,12 +13,16 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
         return res.status(404).json({ message: 'User not found' });
       }
 
-      foundUser.image = `/src/uploads/sharp-${req.file.filename}`;
+      if (foundUser && foundUser.image) {
+        fileDelete(foundUser.image);
+      }
+
+      foundUser.image = `src/uploads/sharp-${req.file.filename}`;
       await foundUser.save();
 
       res.status(200).json({
         message: 'User image profile update',
-        pathImage: `/src/uploads/sharp-${req.file.filename}`,
+        pathImage: `src/uploads/sharp-${req.file.filename}`,
       });
     } else {
       res.status(500).json({ message: 'No file uploaded' });
