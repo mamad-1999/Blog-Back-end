@@ -222,3 +222,55 @@ export const getPosts = async (
     next(error);
   }
 };
+
+export const likePost = async (
+  req: Request<
+    { id: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const foundUser = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (post.likesCount.includes(req.user!)) {
+      await post.updateOne({ $pull: { likesCount: req.user } });
+      await post.save();
+
+      await foundUser.updateOne({ $pull: { favoritesPost: post.id } });
+      await foundUser.save();
+      return res
+        .status(200)
+        .json({ message: 'Post Unlike', likesCount: post.likesCount.length });
+    }
+
+    // If post doesn't like this code run
+    post.likesCount.push(req.user!);
+    await post.save();
+
+    foundUser.favoritesPost.push(post.id);
+    await foundUser.save();
+
+    res.status(200).json({ message: 'Post Like', likesCount: post.likesCount.length });
+  } catch (error) {
+    next(error);
+  }
+};
