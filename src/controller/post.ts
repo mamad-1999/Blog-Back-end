@@ -5,6 +5,7 @@ import User from '../model/User';
 import Post from '../model/Post';
 import { IAddPost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
+import fileDelete from '../utils/fileDeleter';
 
 export const createPost = async (
   req: Request<
@@ -77,9 +78,13 @@ export const deletePost = async (
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    const postImage = post.image;
+
     await post.deleteOne();
     await foundUser.updateOne({ $pull: { posts: req.params.id } });
-    await foundUser.save();
+    await foundUser.save().then(() => {
+      fileDelete(postImage);
+    });
 
     res.status(200).json({ message: 'Post delete successfully', post });
   } catch (error) {
