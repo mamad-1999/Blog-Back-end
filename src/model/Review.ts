@@ -21,10 +21,6 @@ const reviewModel = new mongoose.Schema<IReview>(
       type: String,
       required: true,
     },
-    postedDate: {
-      type: Date,
-      default: Date.now,
-    },
   },
   { timestamps: true },
 );

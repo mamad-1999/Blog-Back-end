@@ -5,7 +5,6 @@ export type IReview = {
   postId: Types.ObjectId;
   depth: number;
   parentId: Types.ObjectId;
-  postedDate: Date;
   author: Types.ObjectId;
   commentText: string;
   children: Record<string, IReview>;
