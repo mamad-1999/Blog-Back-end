@@ -87,7 +87,7 @@ export const getReviewsByPostID = async (
       return res.status(404).json({ message: "Post doesn't have a review" });
     }
 
-    const rec = (comment: IReview, threads: Record<string, IReview>) => {
+    const setReplyComment = (comment: IReview, threads: Record<string, IReview>) => {
       for (const thread in threads) {
         const value = threads[thread];
 
@@ -97,7 +97,7 @@ export const getReviewsByPostID = async (
         }
 
         if (value.children) {
-          rec(comment, value.children);
+          setReplyComment(comment, value.children);
         }
       }
     };
@@ -112,7 +112,7 @@ export const getReviewsByPostID = async (
         threads[comment._id.toString()] = comment;
         continue;
       }
-      rec(comment, threads);
+      setReplyComment(comment, threads);
     }
 
     res.status(200).json({
