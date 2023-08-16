@@ -13,17 +13,32 @@ import { uploadImage } from '../utils/multer';
 import handleMulterError from '../middleware/handleMulterError';
 import verifyRole from '../middleware/verifyRole';
 import { addReview, deleteReview, getReviewsByPostID } from '../controller/review';
+import deleteImage from '../middleware/deleteImage';
 
 const route = express.Router();
 
 // POST => '/posts'
-route.post('/', verifyJWT, uploadImage.single('image'), handleMulterError, createPost);
+route.post(
+  '/',
+  verifyJWT,
+  uploadImage.single('image'),
+  handleMulterError,
+  createPost,
+  deleteImage,
+);
 
 // DELETE => '/posts/:id'
 route.delete('/:id', verifyJWT, deletePost);
 
 // PUT => '/posts/:id'
-route.put('/:id', verifyJWT, uploadImage.single('image'), handleMulterError, updatePost);
+route.put(
+  '/:id',
+  verifyJWT,
+  uploadImage.single('image'),
+  handleMulterError,
+  updatePost,
+  deleteImage,
+);
 
 // GET => '/posts/:id'
 route.get('/:id', getPost);

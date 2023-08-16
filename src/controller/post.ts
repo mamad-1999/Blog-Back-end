@@ -22,6 +22,7 @@ export const createPost = async (
     const checkData = await checkPostValidator({ ...req.body });
     if (checkData !== true) {
       errorHandler('Invalid inputs', 400, checkData);
+      next();
     }
     if (req.file) {
       const foundUser = await User.findOne({ _id: req.user })
@@ -29,7 +30,8 @@ export const createPost = async (
         .exec();
 
       if (!foundUser) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({ message: 'Unauthorized' });
+        next();
       }
 
       await sharp(req.file!.path)
@@ -47,7 +49,7 @@ export const createPost = async (
           const savePost = newPost.save();
 
           foundUser?.posts?.push(savePost as never);
-          foundUser.save();
+          foundUser!.save();
           res.status(201).json({ message: 'Post saved successfully', savePost });
         });
     } else {
@@ -106,17 +108,20 @@ export const updatePost = async (
   next: NextFunction,
 ) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).json({ message: 'Invalid id' });
+    res.status(400).json({ message: 'Invalid id' });
+    next();
   }
 
   try {
     const checkData = await checkPostValidator({ ...req.body });
     if (checkData !== true) {
       errorHandler('Invalid inputs', 400, checkData);
+      next();
     }
     const post = await Post.findById(req.params.id);
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      res.status(404).json({ message: 'Post not found' });
+      next();
     }
 
     const foundUser = await User.findOne({ _id: req.user })
@@ -124,15 +129,17 @@ export const updatePost = async (
       .exec();
 
     if (!foundUser) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      res.status(401).json({ message: 'Unauthorized' });
+      next();
     }
 
-    if (post?.userId.toString() !== foundUser._id.toString()) {
-      return res.status(401).json({ message: 'Unauthorized' });
+    if (post?.userId.toString() !== foundUser!._id.toString()) {
+      res.status(401).json({ message: 'Unauthorized' });
+      next();
     }
 
     let updatedData = {};
-    const postImage = post.image;
+    const postImage = post!.image;
 
     if (req.file) {
       await sharp(req.file!.path)

@@ -11,11 +11,13 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
         .exec();
 
       if (!foundUser) {
-        return res.status(404).json({ message: 'User not found' });
+        res.status(404).json({ message: 'User not found' });
+        next();
       }
 
       if (foundUser && foundUser.image) {
         fileDelete(foundUser.image);
+        next();
       }
 
       await sharp(req.file!.path)
@@ -26,8 +28,8 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
           fileDelete(req.file!.path);
           req.file!.path = `src/uploads/sharp-${req.file?.filename}`;
 
-          foundUser.image = `src/uploads/sharp-${req.file!.filename}`;
-          foundUser.save();
+          foundUser!.image = `src/uploads/sharp-${req.file!.filename}`;
+          foundUser!.save();
 
           res.status(201).json({
             message: 'User image profile update',
