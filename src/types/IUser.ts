@@ -8,7 +8,7 @@ export type IUser = {
   phone?: string;
   biography?: string;
   role: 'user' | 'admin' | 'superAdmin';
-  birthdayDate?: string;
+  birthdayDate?: Date;
   gender?: 'male' | 'female' | 'other';
   twitterProfile?: string;
   linkedinProfile?: string;

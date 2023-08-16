@@ -36,7 +36,7 @@ const userModel = new mongoose.Schema<IUser>(
       default: 'user',
     },
     birthdayDate: {
-      type: String,
+      type: Date,
     },
     linkedinProfile: { type: String },
     twitterProfile: { type: String },
