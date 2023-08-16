@@ -13,4 +13,5 @@ export type IAddReview = {
   commentText: string;
   parentId?: string;
   depth?: string;
+  author?: Types.ObjectId;
 };

@@ -12,6 +12,7 @@ import verifyJWT from '../middleware/verifyJWT';
 import { uploadImage } from '../utils/multer';
 import sharpTransform from '../middleware/sharpTransform';
 import handleMulterError from '../middleware/handleMulterError';
+import verifyRole from '../middleware/verifyRole';
 
 const route = express.Router();
 
@@ -49,5 +50,8 @@ route.post('/like/:id', verifyJWT, likePost);
 
 // GET => '/posts/post-likes/:uid'
 route.get('/post-likes/:uid', verifyJWT, getPostLikes);
+
+// POST => '/posts/reviews/:id'
+route.post('/reviews/:id', verifyJWT, verifyRole('user'));
 
 export default route;
