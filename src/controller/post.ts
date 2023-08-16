@@ -122,7 +122,7 @@ export const updatePost = async (
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    let updatedData;
+    let updatedData = {};
     const postImage = post.image;
 
     if (req.file) {
