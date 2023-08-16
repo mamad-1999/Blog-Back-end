@@ -20,7 +20,7 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
       foundUser.image = `src/uploads/sharp-${req.file.filename}`;
       await foundUser.save();
 
-      res.status(200).json({
+      res.status(201).json({
         message: 'User image profile update',
         pathImage: `src/uploads/sharp-${req.file.filename}`,
       });

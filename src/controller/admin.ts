@@ -105,7 +105,7 @@ export const createAdmin = async (
     newAdmin.role = 'admin';
     await newAdmin.save();
 
-    res.status(200).json({ message: 'New admin created', data: newAdmin });
+    res.status(201).json({ message: 'New admin created', data: newAdmin });
   } catch (error) {
     next(error);
   }

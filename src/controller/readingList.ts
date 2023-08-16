@@ -33,7 +33,7 @@ export const saveReadingList = async (
     foundUser.readingList.push(post._id);
     await foundUser.save();
 
-    res.status(200).json({ message: 'Post Saved' });
+    res.status(201).json({ message: 'Post Saved' });
   } catch (error) {
     next(error);
   }

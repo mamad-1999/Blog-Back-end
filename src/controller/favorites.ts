@@ -36,7 +36,7 @@ export const favorites = async (
     await foundUser.updateOne({ $push: { favoritesCategory: req.body.category } });
     await foundUser.save();
 
-    res.status(200).json({ message: 'save favorite' });
+    res.status(201).json({ message: 'save favorite' });
   } catch (error) {
     next(error);
   }
