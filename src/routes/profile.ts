@@ -12,7 +12,7 @@ route.post(
   verifyJWT,
   uploadImage.single('avatar'),
   handleMulterError,
-  sharpTransform,
+  sharpTransform(500, 500),
   uploadProfile,
 );
 

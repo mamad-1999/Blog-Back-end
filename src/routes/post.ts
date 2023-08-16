@@ -22,7 +22,7 @@ route.post(
   '/',
   verifyJWT,
   uploadImage.single('image'),
-  sharpTransform,
+  sharpTransform(800, 500),
   handleMulterError,
   createPost,
 );
@@ -35,7 +35,7 @@ route.put(
   '/:id',
   verifyJWT,
   uploadImage.single('image'),
-  sharpTransform,
+  sharpTransform(800, 500),
   handleMulterError,
   updatePost,
 );
