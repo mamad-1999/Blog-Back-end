@@ -124,3 +124,48 @@ export const getReviewsByPostID = async (
     next(error);
   }
 };
+
+export const deleteReview = async (
+  req: Request<
+    { id: string; pid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (
+      !mongoose.Types.ObjectId.isValid(req.params.pid) ||
+      !mongoose.Types.ObjectId.isValid(req.params.id)
+    ) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const review = await Review.findById(req.params.id).exec();
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    if (req.user?.toString() !== review.author._id.toString()) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized to Delete this review' });
+    }
+
+    const post = await Post.findById(req.params.pid).exec();
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    await review.deleteOne();
+    await post.updateOne({ $pull: { reviews: req.params.id } });
+    await post.save();
+
+    res.status(200).json({ message: 'Review deleted' });
+  } catch (error) {
+    next(error);
+  }
+};

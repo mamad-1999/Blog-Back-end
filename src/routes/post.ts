@@ -13,7 +13,7 @@ import { uploadImage } from '../utils/multer';
 import sharpTransform from '../middleware/sharpTransform';
 import handleMulterError from '../middleware/handleMulterError';
 import verifyRole from '../middleware/verifyRole';
-import { addReview, getReviewsByPostID } from '../controller/review';
+import { addReview, deleteReview, getReviewsByPostID } from '../controller/review';
 
 const route = express.Router();
 
@@ -57,5 +57,8 @@ route.post('/reviews/:id', verifyJWT, verifyRole('user'), addReview);
 
 // GET = '/posts/reviews/:id'
 route.get('/reviews/:id', verifyJWT, getReviewsByPostID);
+
+// DELETE = '/posts/reviews/:id'
+route.delete('/:pid/reviews/:id', verifyJWT, deleteReview);
 
 export default route;
