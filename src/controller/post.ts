@@ -6,6 +6,7 @@ import Post from '../model/Post';
 import { IAddPost, IUpdatePost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
 import fileDelete from '../utils/fileDeleter';
+import sharp from 'sharp';
 
 export const createPost = async (
   req: Request<
@@ -31,17 +32,24 @@ export const createPost = async (
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
-      const newPost = new Post({
-        ...req.body,
-        image: req.file.path,
-        userId: req.user,
-      });
-      const savePost = await newPost.save();
+      await sharp(req.file!.path)
+        .jpeg({ quality: 70 })
+        .resize(800, 500)
+        .toFile(`src/uploads/sharp-${req.file?.filename}`)
+        .then(() => {
+          fileDelete(req.file!.path);
+          req.file!.path = `src/uploads/sharp-${req.file?.filename}`;
+          const newPost = new Post({
+            ...req.body,
+            image: req.file!.path,
+            userId: req.user,
+          });
+          const savePost = newPost.save();
 
-      foundUser?.posts?.push(savePost as never);
-      await foundUser.save();
-
-      res.status(201).json({ message: 'Post saved successfully', savePost });
+          foundUser?.posts?.push(savePost as never);
+          foundUser.save();
+          res.status(201).json({ message: 'Post saved successfully', savePost });
+        });
     } else {
       res.status(400).json({ message: 'Please upload the Post image' });
     }
@@ -100,6 +108,7 @@ export const updatePost = async (
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ message: 'Invalid id' });
   }
+
   try {
     const checkData = await checkPostValidator({ ...req.body });
     if (checkData !== true) {
@@ -126,7 +135,15 @@ export const updatePost = async (
     const postImage = post.image;
 
     if (req.file) {
-      updatedData = { ...req.body, image: req.file.path };
+      await sharp(req.file!.path)
+        .jpeg({ quality: 70 })
+        .resize(800, 500)
+        .toFile(`src/uploads/sharp-${req.file?.filename}`)
+        .then(() => {
+          fileDelete(req.file!.path);
+          req.file!.path = `src/uploads/sharp-${req.file?.filename}`;
+          updatedData = { ...req.body, image: req.file!.path };
+        });
     } else {
       updatedData = { ...req.body };
     }

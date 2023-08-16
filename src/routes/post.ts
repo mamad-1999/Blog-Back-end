@@ -10,7 +10,6 @@ import {
 } from '../controller/post';
 import verifyJWT from '../middleware/verifyJWT';
 import { uploadImage } from '../utils/multer';
-import sharpTransform from '../middleware/sharpTransform';
 import handleMulterError from '../middleware/handleMulterError';
 import verifyRole from '../middleware/verifyRole';
 import { addReview, deleteReview, getReviewsByPostID } from '../controller/review';
@@ -18,27 +17,13 @@ import { addReview, deleteReview, getReviewsByPostID } from '../controller/revie
 const route = express.Router();
 
 // POST => '/posts'
-route.post(
-  '/',
-  verifyJWT,
-  uploadImage.single('image'),
-  sharpTransform(800, 500),
-  handleMulterError,
-  createPost,
-);
+route.post('/', verifyJWT, uploadImage.single('image'), handleMulterError, createPost);
 
 // DELETE => '/posts/:id'
 route.delete('/:id', verifyJWT, deletePost);
 
 // PUT => '/posts/:id'
-route.put(
-  '/:id',
-  verifyJWT,
-  uploadImage.single('image'),
-  sharpTransform(800, 500),
-  handleMulterError,
-  updatePost,
-);
+route.put('/:id', verifyJWT, uploadImage.single('image'), handleMulterError, updatePost);
 
 // GET => '/posts/:id'
 route.get('/:id', getPost);

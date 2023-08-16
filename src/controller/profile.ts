@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../model/User';
 import fileDelete from '../utils/fileDeleter';
+import sharp from 'sharp';
 
 export const uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,13 +18,22 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
         fileDelete(foundUser.image);
       }
 
-      foundUser.image = `src/uploads/sharp-${req.file.filename}`;
-      await foundUser.save();
+      await sharp(req.file!.path)
+        .jpeg({ quality: 70 })
+        .resize(800, 500)
+        .toFile(`src/uploads/sharp-${req.file?.filename}`)
+        .then(() => {
+          fileDelete(req.file!.path);
+          req.file!.path = `src/uploads/sharp-${req.file?.filename}`;
 
-      res.status(201).json({
-        message: 'User image profile update',
-        pathImage: `src/uploads/sharp-${req.file.filename}`,
-      });
+          foundUser.image = `src/uploads/sharp-${req.file!.filename}`;
+          foundUser.save();
+
+          res.status(201).json({
+            message: 'User image profile update',
+            pathImage: `src/uploads/sharp-${req.file!.filename}`,
+          });
+        });
     } else {
       res.status(500).json({ message: 'No file uploaded' });
     }
