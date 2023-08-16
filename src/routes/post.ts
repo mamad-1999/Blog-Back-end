@@ -13,7 +13,7 @@ import { uploadImage } from '../utils/multer';
 import sharpTransform from '../middleware/sharpTransform';
 import handleMulterError from '../middleware/handleMulterError';
 import verifyRole from '../middleware/verifyRole';
-import { addReview } from '../controller/review';
+import { addReview, getReviewsByPostID } from '../controller/review';
 
 const route = express.Router();
 
@@ -54,5 +54,8 @@ route.get('/post-likes/:uid', verifyJWT, getPostLikes);
 
 // POST => '/posts/reviews/:id'
 route.post('/reviews/:id', verifyJWT, verifyRole('user'), addReview);
+
+// GET = '/posts/reviews/:id'
+route.get('/reviews/:id', verifyJWT, getReviewsByPostID);
 
 export default route;
