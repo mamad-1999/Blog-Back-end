@@ -5,6 +5,8 @@ import { IUpdateUser } from '../types/IUser';
 import checkUserData from '../validators/user';
 import errorHandler from '../utils/errorHandler';
 import Post from '../model/Post';
+import Review from '../model/Review';
+import fileDelete from '../utils/fileDeleter';
 
 export const updateUser = async (
   req: Request<{ id: string }, Record<string, never>, IUpdateUser, Record<string, never>>,
@@ -234,6 +236,61 @@ export const getPostsByUserId = async (
       hasPreviousPage: pageNumber > 1,
       lastPage: Math.ceil(totalPosts / postPerPage),
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAccount = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (req.user?.toString() !== req.params.uid) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized to get posts of this user' });
+    }
+
+    const foundUser = await User.findById(req.params.uid);
+    if (!foundUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (foundUser.role === 'admin') {
+      return res
+        .status(401)
+        .json({ message: "You can't delete your account. Talk to the administrator" });
+    }
+
+    if (foundUser.role === 'superAdmin') {
+      return res
+        .status(401)
+        .json({ message: "You can't delete your account. You are administrator" });
+    }
+
+    const posts = await Post.find({ userId: req.params.uid }).exec();
+    for (const post of posts) {
+      if (post.image) {
+        fileDelete(post.image);
+      }
+      await post.deleteOne();
+    }
+
+    await Review.deleteMany({ author: req.params.uid });
+
+    if (foundUser.image) {
+      fileDelete(foundUser.image);
+    }
+
+    await foundUser.deleteOne();
+    res.status(200).json({ message: 'User account deleted' });
   } catch (error) {
     next(error);
   }

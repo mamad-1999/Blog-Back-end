@@ -41,17 +41,17 @@ export const createPost = async (
         .then(() => {
           fileDelete(req.file!.path);
           req.file!.path = `src/uploads/sharp-${req.file?.filename}`;
-          const newPost = new Post({
-            ...req.body,
-            image: req.file!.path,
-            userId: req.user,
-          });
-          const savePost = newPost.save();
-
-          foundUser?.posts?.push(savePost as never);
-          foundUser!.save();
-          res.status(201).json({ message: 'Post saved successfully', savePost });
         });
+
+      const newPost = await Post.create({
+        ...req.body,
+        image: req.file!.path,
+        userId: req.user,
+      });
+
+      foundUser?.posts?.push(newPost as never);
+      await foundUser!.save();
+      res.status(201).json({ message: 'Post saved successfully', newPost });
     } else {
       res.status(400).json({ message: 'Please upload the Post image' });
     }

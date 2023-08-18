@@ -5,6 +5,7 @@ import {
   getUsers,
   deleteUser,
   getPostsByUserId,
+  deleteAccount,
 } from '../controller/user';
 import {
   saveReadingList,
@@ -49,5 +50,8 @@ route.get('/favorites/:uid', verifyJWT, getFavorites);
 
 // GET => '/users/my-post/:uid'
 route.get('/my-post/:uid', verifyJWT, getPostsByUserId);
+
+// DELETE => '/users/delete-account'
+route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
 
 export default route;
