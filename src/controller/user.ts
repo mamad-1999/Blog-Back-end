@@ -368,6 +368,10 @@ export const deleteAccount = async (
   next: NextFunction,
 ) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
     if (req.user?.toString() !== req.params.uid) {
       return res
         .status(401)
