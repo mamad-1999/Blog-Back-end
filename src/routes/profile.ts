@@ -7,6 +7,7 @@ import deleteImage from '../middleware/deleteImage';
 
 const route = express.Router();
 
+// POST => '/profile/upload-avatar'
 route.post(
   '/upload-avatar',
   verifyJWT,
@@ -16,6 +17,7 @@ route.post(
   deleteImage,
 );
 
+// GET => '/profile/remove-avatar'
 route.delete('/remove-avatar', verifyJWT, removeAvatar);
 
 export default route;
