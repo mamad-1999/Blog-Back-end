@@ -241,6 +241,64 @@ export const getPostsByUserId = async (
   }
 };
 
+export const following = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+    // Find the user who is following
+    const A = await User.findById(req.user).select('-password -refreshToken').exec();
+
+    // Find the user to follow
+    const B = await User.findById(req.params.uid)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (req.user?.toString() === req.params.uid.toString()) {
+      return res.status(401).json({ message: 'Access Denied!' });
+    }
+
+    if (A && B) {
+      const isUserAlreadyFollowed = A.following.find((follower) => {
+        return follower.toString() === B._id.toString();
+      });
+
+      if (isUserAlreadyFollowed) {
+        return res.status(400).json({ message: 'You already followed this user' });
+      }
+
+      await User.findByIdAndUpdate(
+        req.params.uid,
+        { $addToSet: { follower: A._id } },
+        { new: true },
+      );
+
+      await User.findByIdAndUpdate(
+        req.user,
+        { $addToSet: { following: B._id } },
+        { new: true },
+      );
+
+      res.status(200).json({ message: 'Successfully followed' });
+    } else {
+      return res
+        .status(404)
+        .json({ message: 'User that you trying to follow not found' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteAccount = async (
   req: Request<
     { uid: string },
