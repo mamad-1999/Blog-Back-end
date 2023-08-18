@@ -7,6 +7,7 @@ import {
   getPostsByUserId,
   deleteAccount,
   following,
+  unFollow,
 } from '../controller/user';
 import {
   saveReadingList,
@@ -56,7 +57,7 @@ route.get('/my-post/:uid', verifyJWT, getPostsByUserId);
 route.get('/following/:uid', verifyJWT, following);
 
 // GET => '/users/unfollow/:uid'
-route.get('/unfollow/:uid', verifyJWT);
+route.get('/unfollow/:uid', verifyJWT, unFollow);
 
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
