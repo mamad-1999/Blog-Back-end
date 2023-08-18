@@ -378,7 +378,10 @@ export const deleteAccount = async (
         .json({ message: 'You are not Authorized to get posts of this user' });
     }
 
-    const foundUser = await User.findById(req.params.uid);
+    const foundUser = await User.findById(req.params.uid)
+      .select('-password -refreshToken')
+      .exec();
+
     if (!foundUser) {
       return res.status(404).json({ message: 'User not found' });
     }
