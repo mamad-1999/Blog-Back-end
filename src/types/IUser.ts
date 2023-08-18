@@ -16,6 +16,8 @@ export type IUser = {
   favoritesCategory: string[];
   favoritesPost: [Types.ObjectId];
   readingList: [Types.ObjectId];
+  following: [Types.ObjectId];
+  follower: [Types.ObjectId];
   refreshToken: string;
 };
 
