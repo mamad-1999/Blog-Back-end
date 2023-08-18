@@ -419,6 +419,68 @@ export const getAllFollowing = async (
   }
 };
 
+export const getAllFollower = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    { page?: string; limit?: string }
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    if (req.user?.toString() !== req.params.uid.toString()) {
+      return res
+        .status(401)
+        .json({ message: 'You are not Authorized to get this user followings' });
+    }
+
+    const pageNumber = parseInt(req.query.page || '1');
+    const postPerPage = parseInt(req.query.limit || '10');
+
+    if (isNaN(pageNumber) || isNaN(postPerPage)) {
+      return res.status(400).json({ message: 'Page and limit must be numbers' });
+    }
+
+    const foundUser = await User.findById(req.params.uid)
+      .select('-password -refreshToken')
+      .populate({
+        path: 'follower',
+        select: 'image name',
+        options: {
+          skip: (pageNumber - 1) * postPerPage,
+          limit: postPerPage,
+          sort: { _id: 1 },
+        },
+      });
+
+    if (!foundUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const totalFollower = foundUser.follower.length;
+
+    res.status(200).json({
+      message: 'Get User follower successfully',
+      data: foundUser.follower,
+      totalPosts: totalFollower,
+      currentPage: pageNumber,
+      nextPage: pageNumber + 1,
+      previousPage: pageNumber - 1,
+      hasNextPage: postPerPage * pageNumber < totalFollower,
+      hasPreviousPage: pageNumber > 1,
+      lastPage: Math.ceil(totalFollower / postPerPage),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteAccount = async (
   req: Request<
     { uid: string },

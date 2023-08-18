@@ -9,6 +9,7 @@ import {
   following,
   unFollow,
   getAllFollowing,
+  getAllFollower,
 } from '../controller/user';
 import {
   saveReadingList,
@@ -62,6 +63,9 @@ route.get('/unfollow/:uid', verifyJWT, unFollow);
 
 // GEt => '/users/all-following/:uid'
 route.get('/all-following/:uid', verifyJWT, getAllFollowing);
+
+// GEt => '/users/all-follower/:uid'
+route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
