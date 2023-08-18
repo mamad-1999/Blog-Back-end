@@ -14,7 +14,13 @@ import {
   unSaveReadingList,
 } from '../controller/readingList';
 import { favorites, getFavorites, unFavorites } from '../controller/favorites';
-import { getPostsByUserId } from '../controller/user';
+import {
+  following,
+  getAllFollower,
+  getAllFollowing,
+  getPostsByUserId,
+  unFollow,
+} from '../controller/user';
 
 const route = express.Router();
 
@@ -53,5 +59,17 @@ route.get('/favorites/:uid', verifyJWT, verifyRole('admin'), getFavorites);
 
 // GET => '/admins/my-post/:uid'
 route.get('/my-post/:uid', verifyJWT, verifyRole('admin'), getPostsByUserId);
+
+// GET => '/admins/following/:uid'
+route.get('/following/:uid', verifyJWT, following);
+
+// GET => '/admins/unfollow/:uid'
+route.get('/unfollow/:uid', verifyJWT, unFollow);
+
+// GEt => '/admins/all-following/:uid'
+route.get('/all-following/:uid', verifyJWT, getAllFollowing);
+
+// GEt => '/admins/all-follower/:uid'
+route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
 export default route;
