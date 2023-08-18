@@ -55,6 +55,9 @@ route.get('/my-post/:uid', verifyJWT, getPostsByUserId);
 // GET => '/users/following/:uid'
 route.get('/following/:uid', verifyJWT, following);
 
+// GET => '/users/unfollow/:uid'
+route.get('/unfollow/:uid', verifyJWT);
+
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
 
