@@ -22,7 +22,7 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
 
       await sharp(req.file!.path)
         .jpeg({ quality: 70 })
-        .resize(800, 500)
+        .resize(500, 500)
         .toFile(`src/uploads/sharp-${req.file?.filename}`)
         .then(() => {
           fileDelete(req.file!.path);
