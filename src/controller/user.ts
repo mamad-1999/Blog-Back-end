@@ -558,6 +558,19 @@ export const block = async (
         { multi: true },
       );
 
+      for (const post of user.favoritesPost) {
+        const foundPost = await Post.findById(post).exec();
+        if (foundPost) {
+          await foundPost.updateOne({ $pull: { likes: req.user } });
+        }
+      }
+
+      await User.findByIdAndUpdate(
+        req.user,
+        { $pull: { favoritesPost: { $in: userToBeBlocked.posts } } },
+        { multi: true },
+      );
+
       res.status(200).json({ message: 'Successfully User blocked' });
     } else {
       return res
