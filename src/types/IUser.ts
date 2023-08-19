@@ -18,6 +18,7 @@ export type IUser = {
   readingList: [Types.ObjectId];
   following: [Types.ObjectId];
   follower: [Types.ObjectId];
+  blocked: [Types.ObjectId];
   refreshToken: string;
 };
 

@@ -49,10 +49,10 @@ route.get('/following/:uid', verifyJWT, following);
 // GET => '/super-admin/unfollow/:uid'
 route.get('/unfollow/:uid', verifyJWT, unFollow);
 
-// GEt => '/super-admin/all-following/:uid'
+// GET => '/super-admin/all-following/:uid'
 route.get('/all-following/:uid', verifyJWT, getAllFollowing);
 
-// GEt => '/super-admin/all-follower/:uid'
+// GET => '/super-admin/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
 export default route;

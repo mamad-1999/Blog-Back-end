@@ -61,11 +61,14 @@ route.get('/following/:uid', verifyJWT, following);
 // GET => '/users/unfollow/:uid'
 route.get('/unfollow/:uid', verifyJWT, unFollow);
 
-// GEt => '/users/all-following/:uid'
+// GET => '/users/all-following/:uid'
 route.get('/all-following/:uid', verifyJWT, getAllFollowing);
 
-// GEt => '/users/all-follower/:uid'
+// GET => '/users/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
+
+// GET => '/users/block/:uid'
+route.get('/block/:uid', verifyJWT);
 
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);

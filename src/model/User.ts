@@ -46,6 +46,7 @@ const userModel = new mongoose.Schema<IUser>(
     readingList: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
     following: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     follower: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    blocked: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     refreshToken: { type: String },
   },
   { timestamps: true },
