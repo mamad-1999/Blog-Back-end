@@ -8,10 +8,13 @@ import {
 } from '../controller/readingList';
 import { favorites, getFavorites, unFavorites } from '../controller/favorites';
 import {
+  block,
   following,
   getAllFollower,
   getAllFollowing,
+  getBlockList,
   getPostsByUserId,
+  unBlock,
   unFollow,
 } from '../controller/user';
 
@@ -51,6 +54,15 @@ route.get('/unfollow/:uid', verifyJWT, unFollow);
 
 // GET => '/super-admin/all-following/:uid'
 route.get('/all-following/:uid', verifyJWT, getAllFollowing);
+
+// GET => '/super-admin/block/:uid'
+route.get('/block/:uid', verifyJWT, block);
+
+// GET => '/super-admin/unblock/:uid'
+route.get('/unblock/:uid', verifyJWT, unBlock);
+
+// GET => '/super-admin/block-list/:uid'
+route.get('/block-list/:uid', verifyJWT, getBlockList);
 
 // GET => '/super-admin/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);

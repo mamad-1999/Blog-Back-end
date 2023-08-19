@@ -15,10 +15,13 @@ import {
 } from '../controller/readingList';
 import { favorites, getFavorites, unFavorites } from '../controller/favorites';
 import {
+  block,
   following,
   getAllFollower,
   getAllFollowing,
+  getBlockList,
   getPostsByUserId,
+  unBlock,
   unFollow,
 } from '../controller/user';
 
@@ -68,6 +71,15 @@ route.get('/unfollow/:uid', verifyJWT, unFollow);
 
 // GET => '/admins/all-following/:uid'
 route.get('/all-following/:uid', verifyJWT, getAllFollowing);
+
+// GET => '/admins/block/:uid'
+route.get('/block/:uid', verifyJWT, block);
+
+// GET => '/admins/unblock/:uid'
+route.get('/unblock/:uid', verifyJWT, unBlock);
+
+// GET => '/admins/block-list/:uid'
+route.get('/block-list/:uid', verifyJWT, getBlockList);
 
 // GET => '/admins/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
