@@ -71,6 +71,9 @@ route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 // GET => '/users/block/:uid'
 route.get('/block/:uid', verifyJWT, block);
 
+// GET => '/users/unblock/:uid'
+route.get('/unblock/:uid', verifyJWT);
+
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
 

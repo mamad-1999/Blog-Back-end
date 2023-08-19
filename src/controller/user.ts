@@ -527,6 +527,52 @@ export const block = async (
   }
 };
 
+export const unBlock = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const user = await User.findById(req.user).exec();
+    const userToBeBlocked = await User.findById(req.params.uid).exec();
+
+    if (user && userToBeBlocked) {
+      const isUserAlreadyBlocked = user.blocked.find((user) => {
+        return user.toString() === userToBeBlocked._id.toString();
+      });
+
+      if (!isUserAlreadyBlocked) {
+        return res.status(400).json({ message: 'You have not blocked this user' });
+      }
+
+      await User.findByIdAndUpdate(
+        req.user,
+        {
+          $pull: { blocked: userToBeBlocked._id },
+        },
+        { new: true },
+      ).then(() => {
+        res.status(200).json({ message: 'Successfully User unblocked' });
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ message: 'User that you trying to unblock was not found!' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteAccount = async (
   req: Request<
     { uid: string },
