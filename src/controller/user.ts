@@ -514,9 +514,44 @@ export const block = async (
           $addToSet: { blocked: userToBeBlocked._id },
         },
         { new: true },
-      ).then(() => {
-        res.status(200).json({ message: 'Successfully User blocked' });
+      ).catch((err) => {
+        return res.status(400).json({ message: 'Something was wrong... Try again', err });
       });
+
+      const isUserBlockedInMyFollower = user.follower.find((user) => {
+        return user.toString() === userToBeBlocked._id.toString();
+      });
+
+      if (isUserBlockedInMyFollower) {
+        await User.findByIdAndUpdate(
+          req.user,
+          { $pull: { follower: req.params.uid } },
+          { new: true },
+        );
+        await User.findByIdAndUpdate(
+          req.params.uid,
+          { $pull: { following: req.user } },
+          { new: true },
+        );
+      }
+
+      const isUserBlockedMyInFollowing = user.following.find((user) => {
+        return user.toString() === userToBeBlocked._id.toString();
+      });
+
+      if (isUserBlockedMyInFollowing) {
+        await User.findByIdAndUpdate(
+          req.user,
+          { $pull: { following: req.params.uid } },
+          { new: true },
+        );
+        await User.findByIdAndUpdate(
+          req.params.uid,
+          { $pull: { follower: req.user } },
+          { new: true },
+        );
+      }
+      res.status(200).json({ message: 'Successfully User blocked' });
     } else {
       return res
         .status(404)
@@ -591,7 +626,7 @@ export const getBlockList = async (
     if (req.user?.toString() !== req.params.uid.toString()) {
       return res
         .status(401)
-        .json({ message: 'You are not Authorized to get this user followings' });
+        .json({ message: 'You are not Authorized to get this user blockList' });
     }
 
     const pageNumber = parseInt(req.query.page || '1');
