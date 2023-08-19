@@ -558,6 +558,12 @@ export const block = async (
         { multi: true },
       );
 
+      await User.findByIdAndUpdate(
+        req.params.uid,
+        { $pull: { readingList: { $in: user.posts } } },
+        { multi: true },
+      );
+
       for (const post of user.favoritesPost) {
         const foundPost = await Post.findById(post).exec();
         if (foundPost) {
