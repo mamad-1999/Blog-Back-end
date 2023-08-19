@@ -11,6 +11,8 @@ import {
   getAllFollowing,
   getAllFollower,
   block,
+  unBlock,
+  getBlockList,
 } from '../controller/user';
 import {
   saveReadingList,
@@ -72,7 +74,10 @@ route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 route.get('/block/:uid', verifyJWT, block);
 
 // GET => '/users/unblock/:uid'
-route.get('/unblock/:uid', verifyJWT);
+route.get('/unblock/:uid', verifyJWT, unBlock);
+
+// GET => '/users/block-list/:uid'
+route.get('/block-list/:uid', verifyJWT, getBlockList);
 
 // DELETE => '/users/delete-account'
 route.delete('/delete-account/:uid', verifyJWT, deleteAccount);
