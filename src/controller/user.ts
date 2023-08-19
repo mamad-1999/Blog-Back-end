@@ -551,6 +551,13 @@ export const block = async (
           { new: true },
         );
       }
+
+      await User.findByIdAndUpdate(
+        req.user,
+        { $pull: { readingList: { $in: userToBeBlocked.posts } } },
+        { multi: true },
+      );
+
       res.status(200).json({ message: 'Successfully User blocked' });
     } else {
       return res
