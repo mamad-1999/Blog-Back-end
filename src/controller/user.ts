@@ -564,12 +564,11 @@ export const block = async (
         { multi: true },
       );
 
-      for (const post of user.favoritesPost) {
-        const foundPost = await Post.findById(post).exec();
-        if (foundPost) {
-          await foundPost.updateOne({ $pull: { likes: req.user } });
-        }
-      }
+      await Post.updateMany(
+        { userId: userToBeBlocked._id },
+        { $pull: { likes: req.user } },
+        { multi: true },
+      );
 
       await User.findByIdAndUpdate(
         req.user,
@@ -577,12 +576,11 @@ export const block = async (
         { multi: true },
       );
 
-      for (const post of userToBeBlocked.favoritesPost) {
-        const foundPost = await Post.findById(post).exec();
-        if (foundPost) {
-          await foundPost.updateOne({ $pull: { likes: req.params.uid } });
-        }
-      }
+      await Post.updateMany(
+        { userId: req.user },
+        { $pull: { likes: userToBeBlocked._id } },
+        { multi: true },
+      );
 
       await User.findByIdAndUpdate(
         req.params.uid,
