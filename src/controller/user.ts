@@ -496,13 +496,15 @@ export const block = async (
       return res.status(400).json({ message: 'Invalid id' });
     }
 
+    if (req.user?.toString() === req.params.uid.toString()) {
+      return res.status(401).json({ message: 'Access Denied!' });
+    }
+
     const user = await User.findById(req.user).exec();
     const userToBeBlocked = await User.findById(req.params.uid).exec();
 
     if (user && userToBeBlocked) {
-      const isUserAlreadyBlocked = user.blocked.find((user) => {
-        return user.toString() === userToBeBlocked._id.toString();
-      });
+      const isUserAlreadyBlocked = user.blocked.includes(userToBeBlocked._id);
 
       if (isUserAlreadyBlocked) {
         return res.status(400).json({ message: 'You already blocked this user' });
@@ -518,9 +520,7 @@ export const block = async (
         return res.status(400).json({ message: 'Something was wrong... Try again', err });
       });
 
-      const isUserBlockedInMyFollower = user.follower.find((user) => {
-        return user.toString() === userToBeBlocked._id.toString();
-      });
+      const isUserBlockedInMyFollower = user.follower.includes(userToBeBlocked._id);
 
       if (isUserBlockedInMyFollower) {
         await User.findByIdAndUpdate(
@@ -535,9 +535,7 @@ export const block = async (
         );
       }
 
-      const isUserBlockedMyInFollowing = user.following.find((user) => {
-        return user.toString() === userToBeBlocked._id.toString();
-      });
+      const isUserBlockedMyInFollowing = user.following.includes(userToBeBlocked._id);
 
       if (isUserBlockedMyInFollowing) {
         await User.findByIdAndUpdate(
@@ -624,6 +622,10 @@ export const unBlock = async (
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
       return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    if (req.user?.toString() === req.params.uid.toString()) {
+      return res.status(401).json({ message: 'Access Denied!' });
     }
 
     const user = await User.findById(req.user).exec();
