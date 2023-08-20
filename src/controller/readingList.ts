@@ -30,6 +30,11 @@ export const saveReadingList = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
+    const isPostAlreadyInReadingList = foundUser.readingList.includes(post._id);
+    if (isPostAlreadyInReadingList) {
+      return res.status(400).json({ message: 'This post is already in readingList' });
+    }
+
     foundUser.readingList.push(post._id);
     await foundUser.save();
 
@@ -64,6 +69,11 @@ export const unSaveReadingList = async (
     const post = await Post.findById(req.params.postId).exec();
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const isPostAlreadyInReadingList = foundUser.readingList.includes(post._id);
+    if (!isPostAlreadyInReadingList) {
+      return res.status(400).json({ message: "This post isn't in readingList" });
     }
 
     await foundUser.updateOne({ $pull: { readingList: req.params.postId } });
