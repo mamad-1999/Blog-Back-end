@@ -588,6 +588,18 @@ export const block = async (
         { multi: true },
       );
 
+      if (user.posts) {
+        for (const post of user.posts) {
+          await Review.deleteMany({ postId: post, author: userToBeBlocked._id });
+        }
+      }
+
+      if (userToBeBlocked.posts) {
+        for (const post of userToBeBlocked.posts) {
+          await Review.deleteMany({ postId: post, author: req.user });
+        }
+      }
+
       res.status(200).json({ message: 'Successfully User blocked' });
     } else {
       return res
