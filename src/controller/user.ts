@@ -503,6 +503,10 @@ export const block = async (
     const userToBeBlocked = await User.findById(req.params.uid).exec();
 
     if (user && userToBeBlocked) {
+      if (user.role !== 'user' || userToBeBlocked.role !== 'user') {
+        return res.status(401).json({ message: 'Access Denied!' });
+      }
+
       const isUserAlreadyBlocked = user.blocked.includes(userToBeBlocked._id);
 
       if (isUserAlreadyBlocked) {
