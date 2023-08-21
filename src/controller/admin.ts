@@ -63,7 +63,9 @@ export const deleteAdmin = async (
     }
 
     const foundAdmin = await User.findById(req.params.id)
-      .select('-password -refreshToken')
+      .select(
+        '-password -refreshToken -readingList -favoritesPost -favoritesCategory -blocked',
+      )
       .exec();
 
     if (!foundAdmin || foundAdmin.role !== 'admin') {
@@ -91,7 +93,9 @@ export const createAdmin = async (
 ) => {
   try {
     const newAdmin = await User.findOne({ email: req.body.email })
-      .select('-password -refreshToken')
+      .select(
+        '-password -refreshToken -readingList -favoritesPost -favoritesCategory -blocked',
+      )
       .exec();
 
     if (!newAdmin) {
@@ -130,7 +134,9 @@ export const getAdmins = async (
     }
 
     const admins = await User.find({ role: 'admin' })
-      .select('-password -refreshToken')
+      .select(
+        '-password -refreshToken -readingList -favoritesPost -favoritesCategory -blocked',
+      )
       .sort({ _id: 1 })
       .skip((pageNumber - 1) * adminPerPage)
       .limit(adminPerPage);
@@ -168,7 +174,9 @@ export const getAdmin = async (
       return res.status(400).json({ message: 'Invalid id' });
     }
     const foundAdmin = await User.findById(req.params.aid)
-      .select('-password -refreshToken')
+      .select(
+        '-password -refreshToken -readingList -favoritesPost -favoritesCategory -blocked',
+      )
       .exec();
 
     if (!foundAdmin) {

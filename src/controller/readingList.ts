@@ -124,6 +124,7 @@ export const getReadingLists = async (
       .select('-password -refreshToken')
       .populate({
         path: 'readingList',
+        select: '-tags -reviews',
         populate: { path: '_id' },
         options: {
           skip: (pageNumber - 1) * postPerPage,

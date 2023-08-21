@@ -230,7 +230,7 @@ export const getPosts = async (
   }
   try {
     const posts = await Post.find(filters)
-      .select('_id image likes userId title reviews')
+      .select('_id image likes userId title')
       .populate('userId', '_id image name')
       .sort({ _id: 1 })
       .skip((pageNumber - 1) * postPerPage)
@@ -350,6 +350,7 @@ export const getPostLikes = async (
       .populate({
         path: 'favoritesPost',
         populate: { path: '_id' },
+        select: '_id image likes userId title',
         options: {
           skip: (pageNumber - 1) * postPerPage,
           limit: postPerPage,

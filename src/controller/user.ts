@@ -72,7 +72,7 @@ export const getUser = async (
     }
 
     const foundUser = await User.findById(req.params.id).select(
-      '-password -refreshToken',
+      '-password -refreshToken -readingList -favoritesPost -favoritesCategory -role -email -blocked',
     );
     if (!foundUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -85,7 +85,7 @@ export const getUser = async (
         .json({ message: 'Sorry, You Are Not Allowed to Access This User' });
     }
 
-    res.status(200).json({ message: 'User get data successfully', foundUser });
+    res.status(200).json({ message: 'User get data successfully', data: foundUser });
   } catch (error) {
     next(error);
   }
@@ -109,7 +109,9 @@ export const getUsers = async (
   }
   try {
     const users = await User.find({ role: 'user' })
-      .select('-password -refreshToken')
+      .select(
+        '-password -refreshToken -readingList -favoritesPost -favoritesCategory -blocked',
+      )
       .sort({ _id: 1 })
       .skip((pageNumber - 1) * userPerPage)
       .limit(userPerPage);
@@ -386,7 +388,7 @@ export const getAllFollowing = async (
       .select('-password -refreshToken')
       .populate({
         path: 'following',
-        select: 'image name',
+        select: '_id image name',
         options: {
           skip: (pageNumber - 1) * postPerPage,
           limit: postPerPage,
@@ -448,7 +450,7 @@ export const getAllFollower = async (
       .select('-password -refreshToken')
       .populate({
         path: 'follower',
-        select: 'image name',
+        select: '_id image name',
         options: {
           skip: (pageNumber - 1) * postPerPage,
           limit: postPerPage,
@@ -688,7 +690,7 @@ export const getBlockList = async (
       .select('-password -refreshToken')
       .populate({
         path: 'blocked',
-        select: 'image name',
+        select: '_id image name',
         options: {
           skip: (pageNumber - 1) * postPerPage,
           limit: postPerPage,
