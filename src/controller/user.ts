@@ -7,6 +7,7 @@ import errorHandler from '../utils/errorHandler';
 import Post from '../model/Post';
 import Review from '../model/Review';
 import fileDelete from '../utils/fileDeleter';
+import checkUserBlocked from '../utils/checkUserBlocked';
 
 export const updateUser = async (
   req: Request<{ id: string }, Record<string, never>, IUpdateUser, Record<string, never>>,
@@ -77,22 +78,11 @@ export const getUser = async (
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (foundUser && foundUser.role !== 'user') {
-      return res.status(400).json({ message: "You can't get this user data" });
-    }
-
-    const userRequest = await User.findById(req.user)
-      .select('-password -refreshToken')
-      .exec();
-
-    if (userRequest?.role === 'superAdmin' || userRequest?.role === 'admin') {
-      return res.status(200).json({ message: 'User get successfully', data: foundUser });
-    }
-
-    if (req.user?.toString() !== req.params.id) {
+    const isUserBlocked = await checkUserBlocked(foundUser._id, req.user!);
+    if (isUserBlocked) {
       return res
-        .status(401)
-        .json({ message: 'You are not Authorized for get this user info' });
+        .status(403)
+        .json({ message: 'Sorry, You Are Not Allowed to Access This User' });
     }
 
     res.status(200).json({ message: 'User get data successfully', foundUser });
@@ -268,6 +258,13 @@ export const following = async (
     }
 
     if (A && B) {
+      const isUserBlocked = await checkUserBlocked(B._id, req.user!);
+      if (isUserBlocked) {
+        return res
+          .status(403)
+          .json({ message: 'Sorry, You Are Not Allowed to Follow This User' });
+      }
+
       const isUserAlreadyFollowed = A.following.find((follower) => {
         return follower.toString() === B._id.toString();
       });

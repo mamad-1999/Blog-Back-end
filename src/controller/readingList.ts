@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import User from '../model/User';
 import Post from '../model/Post';
+import checkUserBlocked from '../utils/checkUserBlocked';
 
 export const saveReadingList = async (
   req: Request<
@@ -28,6 +29,13 @@ export const saveReadingList = async (
     const post = await Post.findById(req.params.postId).exec();
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
+    if (isUserBlocked) {
+      return res
+        .status(403)
+        .json({ message: 'Sorry, You Are Not Allowed to Access This Post' });
     }
 
     const isPostAlreadyInReadingList = foundUser.readingList.includes(post._id);

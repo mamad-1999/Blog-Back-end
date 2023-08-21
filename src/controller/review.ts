@@ -5,6 +5,7 @@ import Post from '../model/Post';
 import Review from '../model/Review';
 import checkReviewValidator from '../validators/review';
 import { IAddReview, IReview } from '../types/IReview';
+import checkUserBlocked from '../utils/checkUserBlocked';
 
 export const addReview = async (
   req: Request<{ id: string }, Record<string, never>, IAddReview, Record<string, never>>,
@@ -19,6 +20,13 @@ export const addReview = async (
     const post = await Post.findById(req.params.id).exec();
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
+    if (isUserBlocked) {
+      return res
+        .status(403)
+        .json({ message: 'Sorry, You Are Not Allowed to Add Review on This Post' });
     }
 
     if (!req.body.commentText) {
@@ -77,6 +85,11 @@ export const getReviewsByPostID = async (
       return res.status(400).json({ message: 'Invalid id' });
     }
 
+    const blockedUsers = await User.find({ blocked: req.user })
+      .select('_id')
+      .lean()
+      .exec();
+
     const reviews = await Review.find({ postId: req.params.id })
       .sort({ postedData: 1 })
       .populate({ path: 'author', model: 'User', select: '_id email name' })
@@ -115,10 +128,15 @@ export const getReviewsByPostID = async (
       setReplyComment(comment, threads);
     }
 
+    const filteredReviews = Object.values(threads).filter(
+      (review) =>
+        !blockedUsers.some((user) => String(user._id) === String(review.author._id)),
+    );
+
     res.status(200).json({
       message: 'Get Reviews successfully',
       count: reviews.length,
-      reviews: threads,
+      reviews: filteredReviews,
     });
   } catch (error) {
     next(error);

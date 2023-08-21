@@ -7,6 +7,7 @@ import { IAddPost, IUpdatePost, PostFilters } from '../types/IPost';
 import mongoose from 'mongoose';
 import fileDelete from '../utils/fileDeleter';
 import sharp from 'sharp';
+import checkUserBlocked from '../utils/checkUserBlocked';
 
 export const createPost = async (
   req: Request<
@@ -191,9 +192,20 @@ export const getPost = async (
     return res.status(400).json({ message: 'Invalid id' });
   }
   try {
-    const post = await Post.findById(req.params.id).populate('userId', 'email image');
+    const post = await Post.findById(req.params.id).populate('userId', '_id image name');
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
+    if (isUserBlocked) {
+      return res
+        .status(403)
+        .json({ message: 'Sorry, You Are Not Allowed to Access This Post' });
+    }
+
     res.status(200).json({ message: 'Post found successfully', post });
-    res.status;
   } catch (error) {
     next(error);
   }
@@ -211,7 +223,7 @@ export const getPosts = async (
 ) => {
   const { query } = req;
   const pageNumber = parseInt(query.page || '1');
-  const postPerPage = parseInt(query.limit || '2');
+  const postPerPage = parseInt(query.limit || '8');
 
   if (isNaN(pageNumber) || isNaN(postPerPage)) {
     return res.status(400).json({ message: 'Page and limit must be numbers' });
@@ -225,15 +237,23 @@ export const getPosts = async (
   }
   try {
     const posts = await Post.find(filters)
+      .select('_id image likes userId title reviews')
+      .populate('userId', '_id image name')
       .sort({ _id: 1 })
       .skip((pageNumber - 1) * postPerPage)
       .limit(postPerPage);
+
+    const postsFilter = posts.filter((item) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return !item.userId?.blocked?.includes(req.user);
+    });
 
     const totalPosts = await Post.countDocuments(filters);
 
     res.status(200).json({
       message: 'Get Posts successfully',
-      data: posts,
+      data: postsFilter,
       totalPosts: totalPosts,
       currentPage: pageNumber,
       nextPage: pageNumber + 1,
@@ -274,6 +294,13 @@ export const likePost = async (
 
     if (!foundUser) {
       return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
+    if (isUserBlocked) {
+      return res
+        .status(403)
+        .json({ message: 'Sorry, You Are Not Allowed to Like This Post' });
     }
 
     if (post.likes.includes(req.user!)) {
