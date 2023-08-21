@@ -2,16 +2,21 @@ import mongoose from 'mongoose';
 import User from '../model/User';
 
 const checkUserBlocked = async (
-  userId: mongoose.Types.ObjectId | string,
+  userId: mongoose.Types.ObjectId,
   currentUser: mongoose.Types.ObjectId,
 ) => {
   try {
-    const user = await User.findById(userId).select('blocked').exec();
-
-    if (!user) {
+    const userA = await User.findById(userId).select('blocked').exec();
+    if (!userA) {
       throw new Error('User not found');
     }
-    if (user?.blocked.includes(currentUser)) {
+
+    const userB = await User.findById(currentUser).select('blocked').exec();
+    if (!userB) {
+      throw new Error('User not found');
+    }
+
+    if (userA?.blocked.includes(currentUser) || userB?.blocked.includes(userId)) {
       return true;
     }
 

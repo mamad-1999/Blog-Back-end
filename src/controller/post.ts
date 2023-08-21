@@ -198,13 +198,6 @@ export const getPost = async (
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
-    if (isUserBlocked) {
-      return res
-        .status(403)
-        .json({ message: 'Sorry, You Are Not Allowed to Access This Post' });
-    }
-
     res.status(200).json({ message: 'Post found successfully', post });
   } catch (error) {
     next(error);
