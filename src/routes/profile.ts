@@ -1,6 +1,6 @@
 import express from 'express';
 import verifyJWT from '../middleware/verifyJWT';
-import { removeAvatar, uploadProfile } from '../controller/profile';
+import { getMyInfo, removeAvatar, uploadProfile } from '../controller/profile';
 import { uploadImage } from '../utils/multer';
 import handleMulterError from '../middleware/handleMulterError';
 import deleteImage from '../middleware/deleteImage';
@@ -17,7 +17,10 @@ route.post(
   deleteImage,
 );
 
-// GET => '/profile/remove-avatar'
+// DELETE => '/profile/remove-avatar'
 route.delete('/remove-avatar', verifyJWT, removeAvatar);
+
+// GET => '/profile/my-info'
+route.get('/my-info', verifyJWT, getMyInfo);
 
 export default route;

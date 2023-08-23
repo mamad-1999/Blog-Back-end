@@ -67,3 +67,19 @@ export const removeAvatar = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const getMyInfo = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const foundUser = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Get info successfully', data: foundUser });
+  } catch (error) {
+    next(error);
+  }
+};
