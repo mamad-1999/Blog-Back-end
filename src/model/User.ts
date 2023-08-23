@@ -20,6 +20,11 @@ const userModel = new mongoose.Schema<IUser>(
       minlength: 2,
       maxlength: 30,
     },
+    username: {
+      type: String,
+      minlength: 3,
+      maxlength: 50,
+    },
     image: { type: String },
     biography: {
       type: String,

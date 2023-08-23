@@ -4,6 +4,7 @@ const v = new Validator();
 
 const schema = {
   name: { type: 'string', min: 2, max: 30, trim: true, optional: true },
+  username: { type: 'string', min: 3, max: 50, trim: true, optional: true },
   image: { type: 'string', trim: true, optional: true },
   phone: { type: 'string', trim: true, optional: true, min: 10 },
   biography: { type: 'string', optional: true, max: 255 },
