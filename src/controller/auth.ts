@@ -3,10 +3,12 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import checkRegisterValidation from '../validators/register';
 import checkLoginValidation from '../validators/login';
+import checkSocialValidation from '../validators/social';
 import errorHandler from '../utils/errorHandler';
 import User from '../model/User';
 import mongoose from 'mongoose';
 import env from '../utils/env';
+import Social from '../model/Social';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, confirmPassword } = req.body;
@@ -196,6 +198,63 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
     res.status(200).json({
       message: 'User logged out successfully... cookies cleared',
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const socialLogin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { username, email, profileUrl } = req.body;
+    if (!username || !email || !profileUrl) {
+      return res
+        .status(400)
+        .json({ message: 'Your data is not valid, Please resend valid data' });
+    }
+
+    const checkData = await checkSocialValidation({ ...req.body });
+    if (checkData !== true) {
+      return res.status(400).json({ message: 'Input invalid', checkData });
+    }
+
+    const foundUser = await User.findOne({ email: email });
+    if (!foundUser) {
+      const newUser = await User.create({
+        email: email,
+        name: username,
+        image: profileUrl,
+      });
+
+      await Social.create({ username, profileUrl, userId: newUser._id });
+    }
+
+    const accessToken = jwt.sign(
+      {
+        _id: foundUser!._id,
+        role: foundUser!.role,
+      },
+      env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '6d' },
+    );
+
+    const refreshToken = jwt.sign({ _id: foundUser!._id }, env.REFRESH_TOKEN_SECRET, {
+      expiresIn: '8d',
+    });
+
+    foundUser!.refreshToken = refreshToken;
+    const result = await foundUser!.save();
+    if (!result) {
+      errorHandler('User credential save was not Successfully... Try again');
+    }
+
+    res.cookie('jwt', refreshToken, {
+      sameSite: 'none',
+      httpOnly: true,
+      // secure: '',
+      maxAge: 8 * 24 * 60 * 60 * 1000, //8 day
+    });
+
+    res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
   }

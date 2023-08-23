@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, refresh, logout } from '../controller/auth';
+import { register, login, refresh, logout, socialLogin } from '../controller/auth';
 import limiter from '../middleware/limiter';
 
 const route = express.Router();
@@ -15,5 +15,8 @@ route.get('/refresh', refresh);
 
 // Post => '/auth/logout'
 route.post('/logout', logout);
+
+// Post => '/auth/social'
+route.post('/social', socialLogin);
 
 export default route;
