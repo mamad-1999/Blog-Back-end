@@ -35,3 +35,9 @@ export type IUpdateUser = {
   twitterProfile?: string;
   linkedinProfile?: string;
 };
+
+export type ISetUserNameAndAvatar = {
+  username?: string;
+  name?: string;
+  image?: string;
+};
