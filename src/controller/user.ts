@@ -42,8 +42,15 @@ export const updateUser = async (
       errorHandler('Invalid inputs', 400, checkData);
     }
 
+    const isUserNameAlreadyUsed = await User.find({ username: req.body.username });
+    if (isUserNameAlreadyUsed) {
+      return res
+        .status(400)
+        .json({ message: 'This username already used by another user' });
+    }
+
     const userUpdated = await User.findByIdAndUpdate(req.params.id, {
-      $set: { ...req.body },
+      $set: { ...req.body, username: `@${req.body.username}` },
     }).select('-password -refreshToken');
 
     if (!updateUser) {

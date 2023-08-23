@@ -26,6 +26,7 @@ export type IUser = {
 
 export type IUpdateUser = {
   name?: string;
+  username?: string;
   image?: string;
   phone?: string;
   biography?: string;
