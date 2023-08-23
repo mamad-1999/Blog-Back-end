@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../model/User';
 import fileDelete from '../utils/fileDeleter';
 import checkUserData from '../validators/user';
+import { generateFromEmail } from 'unique-username-generator';
 import sharp from 'sharp';
 import { ISetUserNameAndAvatar } from '../types/IUser';
 
@@ -104,6 +105,15 @@ export const setNameAndAvatar = async (
       return res.status(400).json({ message: 'Invalid input' });
     }
 
+    const foundUser = await User.findById(req.user)
+      .select('-password -refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      res.status(404).json({ message: 'User not found' });
+      next();
+    }
+
     const userNameWithAtSign = `@${username}`;
     if (username) {
       const isUserNameAlreadyUsed = await User.findOne({
@@ -131,18 +141,10 @@ export const setNameAndAvatar = async (
     }
 
     if (!req.body.username) {
-      userInfo.username = '@Noting';
+      const usernameGenerate = generateFromEmail(foundUser!.email, 4);
+      userInfo.username = `@${usernameGenerate}`;
     } else {
       userInfo.username = userNameWithAtSign;
-    }
-
-    const foundUser = await User.findById(req.user)
-      .select('-password -refreshToken')
-      .exec();
-
-    if (!foundUser) {
-      res.status(404).json({ message: 'User not found' });
-      next();
     }
 
     const user = await User.findByIdAndUpdate(req.user, {
