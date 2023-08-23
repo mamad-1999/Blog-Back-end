@@ -28,6 +28,7 @@ const postModel = new mongoose.Schema<IPost>(
     tags: {
       type: [String],
     },
+    postedAt: { type: Date, default: Date.now },
   },
   { timestamps: true },
 );

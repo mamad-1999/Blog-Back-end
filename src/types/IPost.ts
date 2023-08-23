@@ -8,6 +8,7 @@ export type IPost = {
   reviews: [Types.ObjectId];
   likes: [Types.ObjectId];
   tags: [string];
+  postedAt: Date;
 };
 
 export type IAddPost = {

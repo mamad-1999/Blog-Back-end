@@ -20,6 +20,7 @@ export type IUser = {
   follower: [Types.ObjectId];
   blocked: [Types.ObjectId];
   refreshToken: string;
+  createUserAt: Date;
 };
 
 export type IUpdateUser = {

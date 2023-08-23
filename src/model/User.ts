@@ -48,6 +48,7 @@ const userModel = new mongoose.Schema<IUser>(
     follower: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     blocked: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     refreshToken: { type: String },
+    createUserAt: { type: Date, default: Date.now },
   },
   { timestamps: true },
 );

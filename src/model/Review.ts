@@ -22,6 +22,10 @@ const reviewModel = new mongoose.Schema<IReview>(
       type: String,
       required: true,
     },
+    postedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true },
 );
@@ -39,4 +43,4 @@ reviewModel.pre('deleteMany', { document: false, query: true }, async function (
   next();
 });
 
-export default mongoose.model('Review', reviewModel);
+export default mongoose.model<IReview>('Review', reviewModel);

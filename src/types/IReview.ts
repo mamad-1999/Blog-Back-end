@@ -8,6 +8,7 @@ export type IReview = {
   author: Types.ObjectId;
   commentText: string;
   children: Record<string, IReview>;
+  postedAt: Date;
 };
 
 export type IAddReview = {
