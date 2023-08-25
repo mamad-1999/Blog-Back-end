@@ -19,9 +19,8 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
       }
 
       if (foundUser?.isAdminBlocked) {
-        return res
-          .status(401)
-          .json({ message: 'Access Denied! You are blocked by admin' });
+        res.status(401).json({ message: 'Access Denied! You are blocked by admin' });
+        next();
       }
 
       if (foundUser && foundUser.image) {
