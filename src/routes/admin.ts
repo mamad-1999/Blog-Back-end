@@ -8,6 +8,7 @@ import {
   deleteAdmin,
   getAdmin,
   getAdmins,
+  getBlockedUsersByAdmin,
   updateAdmin,
 } from '../controller/admin';
 import {
@@ -91,5 +92,8 @@ route.post('/block-user/:uid', verifyJWT, verifyRole('admin'), adminBlockedUser)
 
 // POST => '/admins/unblock-user/:uid'
 route.post('/unblock-user/:uid', verifyJWT, verifyRole('admin'), adminUnBlockedUser);
+
+// GET => '/admins/block-list-user'
+route.get('/block-list-user', verifyJWT, verifyRole('admin'), getBlockedUsersByAdmin);
 
 export default route;
