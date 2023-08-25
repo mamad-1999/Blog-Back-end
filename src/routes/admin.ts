@@ -2,6 +2,8 @@ import express from 'express';
 import verifyJWT from '../middleware/verifyJWT';
 import verifyRole from '../middleware/verifyRole';
 import {
+  adminBlockedUser,
+  adminUnBlockedUser,
   createAdmin,
   deleteAdmin,
   getAdmin,
@@ -85,6 +87,9 @@ route.get('/block-list/:uid', verifyJWT, getBlockList);
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
 // POST => '/admins/block-user/:uid'
-route.post('/block-user/:uid', verifyJWT, verifyRole('admin'));
+route.post('/block-user/:uid', verifyJWT, verifyRole('admin'), adminBlockedUser);
+
+// POST => '/admins/unblock-user/:uid'
+route.post('/unblock-user/:uid', verifyJWT, verifyRole('admin'), adminUnBlockedUser);
 
 export default route;

@@ -234,7 +234,7 @@ export const adminBlockedUser = async (
         return res.status(401).json({ message: 'Access Denied!' });
       }
 
-      if (userShouldBlocked.isAdminBlocked === true) {
+      if (userShouldBlocked.isAdminBlocked) {
         return res.status(400).json({ message: 'This user already blocked by admin' });
       }
 
@@ -245,6 +245,48 @@ export const adminBlockedUser = async (
       await userShouldBlocked.save();
 
       res.status(200).json({ message: 'Successfully User blocked by admin' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const adminUnBlockedUser = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const userShouldBlocked = await User.findById(req.params.uid)
+      .select('-password -refreshToken')
+      .exec();
+    const admin = await User.findById(req.user).select('-password -refreshToken').exec();
+
+    if (admin && userShouldBlocked) {
+      if (admin.role !== 'admin' || userShouldBlocked.role !== 'user') {
+        return res.status(401).json({ message: 'Access Denied!' });
+      }
+
+      if (!userShouldBlocked.isAdminBlocked) {
+        return res.status(400).json({ message: 'This user is not blocked by admin' });
+      }
+
+      await userShouldBlocked.updateOne(
+        { $set: { isAdminBlocked: false } },
+        { new: true },
+      );
+      await userShouldBlocked.save();
+
+      res.status(200).json({ message: 'Successfully User Unblocked by admin' });
     }
   } catch (error) {
     next(error);
