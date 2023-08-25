@@ -230,7 +230,7 @@ export const adminBlockedUser = async (
     const admin = await User.findById(req.user).select('-password -refreshToken').exec();
 
     if (admin && userShouldBlocked) {
-      if (admin.role !== 'admin' || userShouldBlocked.role !== 'user') {
+      if (userShouldBlocked.role !== 'user') {
         return res.status(401).json({ message: 'Access Denied!' });
       }
 
@@ -272,7 +272,7 @@ export const adminUnBlockedUser = async (
     const admin = await User.findById(req.user).select('-password -refreshToken').exec();
 
     if (admin && userShouldBlocked) {
-      if (admin.role !== 'admin' || userShouldBlocked.role !== 'user') {
+      if (userShouldBlocked.role !== 'user') {
         return res.status(401).json({ message: 'Access Denied!' });
       }
 
