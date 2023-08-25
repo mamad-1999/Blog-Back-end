@@ -274,6 +274,12 @@ export const following = async (
           .json({ message: 'Sorry, You Are Not Allowed to Follow This User' });
       }
 
+      if (A?.isAdminBlocked) {
+        return res
+          .status(401)
+          .json({ message: 'Access Denied! You are blocked by admin' });
+      }
+
       const isUserAlreadyFollowed = A.following.find((follower) => {
         return follower.toString() === B._id.toString();
       });
@@ -512,6 +518,12 @@ export const block = async (
     if (user && userToBeBlocked) {
       if (user.role !== 'user' || userToBeBlocked.role !== 'user') {
         return res.status(401).json({ message: 'Access Denied!' });
+      }
+
+      if (user?.isAdminBlocked) {
+        return res
+          .status(401)
+          .json({ message: 'Access Denied! You are blocked by admin' });
       }
 
       const isUserAlreadyBlocked = user.blocked.includes(userToBeBlocked._id);

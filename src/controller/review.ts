@@ -45,6 +45,10 @@ export const addReview = async (
       return res.status(404).json({ message: 'User not found' });
     }
 
+    if (foundUser?.isAdminBlocked) {
+      return res.status(401).json({ message: 'Access Denied! You are blocked by admin' });
+    }
+
     const data: IAddReview = {
       author: foundUser._id,
       commentText: req.body.commentText,

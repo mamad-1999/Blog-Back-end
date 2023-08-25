@@ -35,6 +35,11 @@ export const createPost = async (
         next();
       }
 
+      if (foundUser?.isAdminBlocked) {
+        res.status(401).json({ message: 'Access Denied! You are blocked by admin' });
+        next();
+      }
+
       await sharp(req.file!.path)
         .jpeg({ quality: 70 })
         .resize(800, 500)
@@ -131,6 +136,11 @@ export const updatePost = async (
 
     if (!foundUser) {
       res.status(401).json({ message: 'Unauthorized' });
+      next();
+    }
+
+    if (foundUser?.isAdminBlocked) {
+      res.status(401).json({ message: 'Access Denied! You are blocked by admin' });
       next();
     }
 
@@ -287,6 +297,10 @@ export const likePost = async (
 
     if (!foundUser) {
       return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (foundUser?.isAdminBlocked) {
+      return res.status(401).json({ message: 'Access Denied! You are blocked by admin' });
     }
 
     const isUserBlocked = await checkUserBlocked(post.userId, req.user!);
