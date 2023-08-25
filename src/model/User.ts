@@ -54,6 +54,7 @@ const userModel = new mongoose.Schema<IUser>(
     blocked: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     refreshToken: { type: String },
     createUserAt: { type: Date, default: Date.now },
+    isAdminBlocked: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

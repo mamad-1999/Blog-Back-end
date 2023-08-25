@@ -84,4 +84,7 @@ route.get('/block-list/:uid', verifyJWT, getBlockList);
 // GET => '/admins/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
+// POST => '/admins/block-user/:uid'
+route.post('/block-user/:uid', verifyJWT, verifyRole('admin'));
+
 export default route;

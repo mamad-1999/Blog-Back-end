@@ -22,6 +22,7 @@ export type IUser = {
   blocked: [Types.ObjectId];
   refreshToken: string;
   createUserAt: Date;
+  isAdminBlocked: boolean;
 };
 
 export type IUpdateUser = {

@@ -208,3 +208,45 @@ export const getAdmin = async (
     next(error);
   }
 };
+
+export const adminBlockedUser = async (
+  req: Request<
+    { uid: string },
+    Record<string, never>,
+    Record<string, never>,
+    Record<string, never>
+  >,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
+      return res.status(400).json({ message: 'Invalid id' });
+    }
+
+    const userShouldBlocked = await User.findById(req.params.uid)
+      .select('-password -refreshToken')
+      .exec();
+    const admin = await User.findById(req.user).select('-password -refreshToken').exec();
+
+    if (admin && userShouldBlocked) {
+      if (admin.role !== 'admin' || userShouldBlocked.role !== 'user') {
+        return res.status(401).json({ message: 'Access Denied!' });
+      }
+
+      if (userShouldBlocked.isAdminBlocked === true) {
+        return res.status(400).json({ message: 'This user already blocked by admin' });
+      }
+
+      await userShouldBlocked.updateOne(
+        { $set: { isAdminBlocked: true } },
+        { new: true },
+      );
+      await userShouldBlocked.save();
+
+      res.status(200).json({ message: 'Successfully User blocked by admin' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
