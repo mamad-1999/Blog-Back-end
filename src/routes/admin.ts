@@ -87,13 +87,13 @@ route.get('/block-list/:uid', verifyJWT, getBlockList);
 // GET => '/admins/all-follower/:uid'
 route.get('/all-follower/:uid', verifyJWT, getAllFollower);
 
+// GET => '/admins/block-list-user'
+route.get('/blocks/users', verifyJWT, verifyRole('admin'), getBlockedUsersByAdmin);
+
 // POST => '/admins/block-user/:uid'
 route.post('/block-user/:uid', verifyJWT, verifyRole('admin'), adminBlockedUser);
 
 // POST => '/admins/unblock-user/:uid'
 route.post('/unblock-user/:uid', verifyJWT, verifyRole('admin'), adminUnBlockedUser);
-
-// GET => '/admins/block-list-user'
-route.get('/block-list-user', verifyJWT, verifyRole('admin'), getBlockedUsersByAdmin);
 
 export default route;

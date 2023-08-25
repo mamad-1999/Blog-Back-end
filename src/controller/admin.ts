@@ -238,11 +238,11 @@ export const adminBlockedUser = async (
         return res.status(400).json({ message: 'This user already blocked by admin' });
       }
 
-      await userShouldBlocked.updateOne(
+      await User.findByIdAndUpdate(
+        req.params.uid,
         { $set: { isAdminBlocked: true } },
         { new: true },
       );
-      await userShouldBlocked.save();
 
       res.status(200).json({ message: 'Successfully User blocked by admin' });
     }
@@ -262,10 +262,6 @@ export const adminUnBlockedUser = async (
   next: NextFunction,
 ) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.uid)) {
-      return res.status(400).json({ message: 'Invalid id' });
-    }
-
     const userShouldBlocked = await User.findById(req.params.uid)
       .select('-password -refreshToken')
       .exec();
