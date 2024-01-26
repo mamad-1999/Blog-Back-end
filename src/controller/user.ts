@@ -128,7 +128,7 @@ export const getUsers = async (
     res.status(200).json({
       message: 'Get users successfully',
       data: users,
-      totalPosts: totalUsers,
+      totalUsers: totalUsers,
       currentPage: pageNumber,
       nextPage: pageNumber + 1,
       previousPage: pageNumber - 1,
