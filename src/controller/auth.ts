@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import checkRegisterValidation from '../validators/register';
 import checkLoginValidation from '../validators/login';
 import checkSocialValidation from '../validators/social';
+import checkChangePasswordValidation from '../validators/changePassword';
 import errorHandler from '../utils/errorHandler';
 import User from '../model/User';
 import mongoose from 'mongoose';
@@ -255,6 +256,77 @@ export const socialLogin = async (req: Request, res: Response, next: NextFunctio
     });
 
     res.status(200).json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
+    return res.status(400).json({
+      message: 'currentPassword, newPassword and confirmNewPassword are required',
+    });
+  }
+
+  try {
+    const checkData = await checkChangePasswordValidation({
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+    });
+    if (checkData !== true) {
+      errorHandler('Invalid Fields', 400, checkData);
+    }
+
+    const foundUser = await User.findOne({ _id: req.user })
+      .select('-refreshToken')
+      .exec();
+
+    if (!foundUser) {
+      return res.status(401).json({
+        message: 'User not found',
+      });
+    }
+
+    const match = await bcrypt.compare(currentPassword, foundUser!.password as string);
+    if (!match) {
+      return res.status(400).json({
+        message: 'Sorry, Your current Password is Wrong!',
+      });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res
+        .status(400)
+        .json({ message: 'Your newPassword and confirmPassword is not Match' });
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 12);
+
+    const result = await User.findByIdAndUpdate(req.user, {
+      $set: { password: hashPassword },
+    });
+
+    if (!result) {
+      return res
+        .status(500)
+        .json({ message: 'Sorry, something Wrong. Please try again' });
+    }
+
+    const accessToken = jwt.sign(
+      {
+        _id: foundUser!._id,
+        role: foundUser!.role,
+      },
+      env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '6d' },
+    );
+
+    return res
+      .status(200)
+      .json({ message: 'Your Password Successfully Changed!', token: accessToken });
   } catch (error) {
     next(error);
   }
