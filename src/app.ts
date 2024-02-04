@@ -5,6 +5,7 @@ import express, { Response, Request } from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import cors from 'cors';
+import morgan from 'morgan';
 
 import corsOptions from './configs/corsOptions';
 import credential from './middleware/credential';
@@ -27,6 +28,8 @@ connectDB();
 app.use(cookieParser());
 
 app.use(credential);
+
+app.use(morgan('dev'));
 
 app.use(cors(corsOptions));
 
