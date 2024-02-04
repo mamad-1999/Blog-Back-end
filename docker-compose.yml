@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  server:
+    build: .
+    environment:
+      - PORT
+      - DATABASE_URI
+      - ACCESS_TOKEN_SECRET
+      - REFRESH_TOKEN_SECRET
+    network_mode: "host"
+    restart: always
+    volumes:
+      - /app/node_modules
+      - .:/app
+    
