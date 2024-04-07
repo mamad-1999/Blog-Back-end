@@ -2,9 +2,10 @@
 
 <div align="center">
   <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/typescript/typescript-original.svg" alt="icon" />
-  <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original.svg"           alt="icon" />
+  <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original.svg" alt="icon" />
   <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/mongodb/mongodb-original.svg" alt="icon" />
-    <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/express/express-original.svg" alt="icon" />
+  <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/express/express-original.svg" alt="icon" />
+  <img width="60px" hight="60px" src="https://github.com/devicons/devicon/blob/master/icons/docker/docker-original.svg" alt="icon" />
 </div>
 
 
